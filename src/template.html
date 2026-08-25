@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chloé &amp; Nöggi – Kahoot</title>
+<style>
+__FONT_CSS__
+:root{
+  --bg0:#241627; --bg1:#3a1f33; --glow:#5a2c44;
+  --cream:#fbf4e6; --cream-dim:#e8ddc8; --ink:#2a1e2b;
+  --gold:#e9b44c; --gold-deep:#c98f2b; --gold-hi:#f3cf7e;
+  --tape:rgba(233,180,76,.75); --neon2:#e9b44c;
+  --red:#d94a47; --blue:#3d6bd1; --yellow:#e3a61c; --green:#47934f;
+  --tile-shadow:0 4px 0 rgba(0,0,0,.28);
+  --radius:14px;
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+html,body{margin:0; padding:0;}
+body{
+  min-height:100dvh;
+  background:
+    radial-gradient(1200px 700px at 50% -10%, var(--glow) 0%, transparent 60%),
+    linear-gradient(160deg, var(--bg1) 0%, var(--bg0) 70%);
+  background-attachment:fixed;
+  color:var(--cream);
+  font-family:'Nunito', 'Segoe UI', system-ui, sans-serif;
+  font-weight:700;
+}
+#app{max-width:640px; margin:0 auto; padding:12px 14px calc(20px + env(safe-area-inset-bottom)); min-height:100dvh; display:flex; flex-direction:column;}
+
+/* ---------- shared ---------- */
+.btn{
+  display:inline-block; border:none; cursor:pointer; text-decoration:none;
+  font-family:'Nunito',sans-serif; font-weight:900; font-size:1.05rem;
+  color:var(--ink); background:var(--gold);
+  padding:14px 30px; border-radius:999px;
+  box-shadow:0 4px 0 var(--gold-deep);
+  transition:transform .12s ease;
+}
+.btn:active{transform:translateY(3px); box-shadow:0 1px 0 var(--gold-deep);}
+.btn.ghost{background:transparent; color:var(--cream-dim); box-shadow:none; font-weight:800; font-size:.9rem; padding:8px 14px; text-decoration:underline; text-underline-offset:3px;}
+.btn:focus-visible, .tile:focus-visible, .pill:focus-visible{outline:3px solid var(--gold); outline-offset:3px;}
+
+.pills{display:flex; gap:8px; justify-content:center;}
+.pill{
+  font-family:'Nunito',sans-serif; font-weight:900; font-size:.85rem; letter-spacing:.06em;
+  color:var(--cream-dim); background:rgba(255,255,255,.08);
+  border:1.5px solid rgba(251,244,230,.35); border-radius:999px;
+  padding:7px 16px; cursor:pointer;
+}
+.pill.on{color:var(--ink); background:var(--gold); border-color:var(--gold);}
+
+/* ---------- polaroid signature ---------- */
+.polaroid{
+  position:relative; background:#fff; padding:9px 9px 30px;
+  border-radius:4px; box-shadow:0 10px 26px rgba(0,0,0,.45);
+  display:inline-block;
+}
+.polaroid img{display:block; width:100%; height:auto; border-radius:2px;}
+.polaroid::before{
+  content:""; position:absolute; top:-12px; left:50%; transform:translateX(-50%) rotate(-2deg);
+  width:86px; height:26px; background:var(--tape);
+  box-shadow:0 1px 3px rgba(0,0,0,.2);
+}
+.tilt-l{transform:rotate(-1.4deg);}
+.tilt-r{transform:rotate(1.1deg);}
+.polaroid .cap{
+  position:absolute; left:0; right:0; bottom:6px; text-align:center;
+  color:#6b5b4a; font-size:.78rem; font-weight:800; font-family:'Nunito',sans-serif;
+}
+
+/* ---------- start ---------- */
+.start{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:18px; padding:18px 0;}
+.kicker{font-weight:900; letter-spacing:.22em; font-size:.8rem; color:var(--gold); text-transform:uppercase;}
+h1.title{
+  font-family:'Archivo Black','Nunito',sans-serif; font-weight:400;
+  font-size:clamp(2rem, 9vw, 3.2rem); line-height:1.02; margin:0; color:var(--cream);
+  text-shadow:0 4px 0 rgba(0,0,0,.3);
+}
+.title .amp{color:var(--gold);}
+.sub{color:var(--cream-dim); font-size:1rem; max-width:38ch; margin:0;}
+.rules{color:var(--cream-dim); font-size:.85rem; font-weight:700; opacity:.85; max-width:40ch;}
+.fan{position:relative; width:min(320px, 78vw); height:150px; margin-top:6px;}
+.fan .polaroid{position:absolute; width:44%;}
+.fan .f1{left:0; top:14px; transform:rotate(-7deg); z-index:1;}
+.fan .f2{left:28%; top:0; transform:rotate(1.5deg); z-index:3;}
+.fan .f3{right:0; top:18px; transform:rotate(6deg); z-index:2;}
+.fan .polaroid::before{width:56px; height:18px; top:-9px;}
+
+/* ---------- top bar ---------- */
+.top{display:flex; align-items:center; gap:10px; padding:2px 0 10px;}
+.top .brand{font-weight:900; font-size:.8rem; letter-spacing:.08em; color:var(--gold); text-transform:uppercase; white-space:nowrap;}
+.top .qcount{color:var(--cream-dim); font-size:.85rem; font-weight:800; margin-left:auto; white-space:nowrap;}
+.scorechip{background:rgba(255,255,255,.1); border-radius:999px; padding:5px 12px; font-weight:900; font-size:.85rem; white-space:nowrap;}
+.langcycle{border:1.5px solid rgba(251,244,230,.35); background:transparent; color:var(--cream-dim); font-weight:900; font-size:.75rem; border-radius:8px; padding:5px 9px; cursor:pointer; letter-spacing:.08em;}
+
+/* ---------- question ---------- */
+.stage{flex:1; display:flex; flex-direction:column; gap:14px; position:relative;}
+.photo-wrap{display:flex; justify-content:center; margin-top:6px;}
+.photo-wrap .polaroid{max-width:min(92%, 460px);}
+.photo-wrap .polaroid img{max-height:min(38dvh, 400px); width:auto; max-width:100%; margin:0 auto;}
+.timer{height:10px; border-radius:999px; background:rgba(255,255,255,.14); overflow:hidden;}
+.timer i{display:block; height:100%; width:100%; background:linear-gradient(90deg, var(--gold), var(--gold-hi)); border-radius:999px;}
+.qtext{
+  font-family:'Archivo Black','Nunito',sans-serif; font-weight:400;
+  font-size:clamp(1.05rem, 4.6vw, 1.45rem); line-height:1.22; text-align:center; margin:auto 4px;
+  text-wrap:balance;
+}
+.grid{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:auto;}
+.tile{
+  position:relative; border:none; cursor:pointer; text-align:left;
+  display:flex; align-items:center; gap:10px;
+  min-height:66px; padding:12px 12px; border-radius:var(--radius);
+  color:#fff; font-family:'Nunito',sans-serif; font-weight:800;
+  font-size:clamp(.86rem, 3.4vw, 1rem); line-height:1.2;
+  box-shadow:var(--tile-shadow);
+  transition:transform .12s ease, opacity .25s ease, filter .25s ease;
+}
+.tile:active{transform:translateY(2px);}
+.tile .shape{font-size:1.05rem; flex:0 0 auto; text-shadow:0 1px 2px rgba(0,0,0,.3);}
+.t0{background:var(--red);} .t1{background:var(--blue);} .t2{background:var(--yellow);} .t3{background:var(--green);}
+.tile.dim{opacity:.28; filter:saturate(.4);}
+.tile.win{box-shadow:0 0 0 3px #fff, 0 6px 18px rgba(0,0,0,.4); animation:pulse .55s ease 1;}
+.tile.win::after{content:"✓"; position:absolute; top:6px; right:10px; font-weight:900; font-size:1.1rem;}
+.tile.lose::after{content:"✕"; position:absolute; top:6px; right:10px; font-weight:900; font-size:1.1rem;}
+@keyframes pulse{0%{transform:scale(1);}45%{transform:scale(1.035);}100%{transform:scale(1);}}
+@keyframes popin{from{transform:translateY(10px) scale(.96); opacity:0;} to{transform:none; opacity:1;}}
+.grid .tile{animation:popin .3s ease backwards;}
+.grid .tile:nth-child(2){animation-delay:.05s;} .grid .tile:nth-child(3){animation-delay:.1s;} .grid .tile:nth-child(4){animation-delay:.15s;}
+
+/* ---------- reveal ---------- */
+.banner{
+  text-align:center; border-radius:var(--radius); padding:10px 14px;
+  font-weight:900; font-size:1.02rem; background:rgba(255,255,255,.1);
+  animation:popin .28s ease backwards;
+}
+.banner.good{background:rgba(71,147,79,.32); box-shadow:inset 0 0 0 1.5px rgba(120,220,130,.5);}
+.banner.bad{background:rgba(217,74,71,.28); box-shadow:inset 0 0 0 1.5px rgba(255,140,140,.45);}
+.banner small{display:block; font-size:.82rem; font-weight:800; color:var(--cream-dim); margin-top:3px;}
+.banner .pts{color:var(--gold); font-size:1.25rem;}
+.nextrow{display:flex; justify-content:center; padding-top:2px;}
+.exhibit-label{text-align:center; color:var(--gold); font-weight:900; font-size:.8rem; letter-spacing:.14em; text-transform:uppercase; margin-bottom:-6px;}
+
+/* confetti */
+.cf{position:fixed; top:38%; left:50%; width:9px; height:14px; z-index:50; pointer-events:none;
+  animation:cfall 1.25s cubic-bezier(.15,.6,.4,1) forwards;}
+@keyframes cfall{
+  0%{transform:translate(0,0) rotate(0); opacity:1;}
+  100%{transform:translate(var(--dx), var(--dy)) rotate(var(--rr)); opacity:0;}
+}
+@media (prefers-reduced-motion: reduce){
+  *{animation:none !important; transition:none !important;}
+}
+
+/* ---------- end ---------- */
+.end{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:14px; padding:16px 0;}
+.end .tier{font-family:'Archivo Black','Nunito',sans-serif; font-size:clamp(1.5rem, 7vw, 2.3rem); line-height:1.08; margin:4px 0 0;}
+.end .bigpts{font-size:clamp(2.4rem, 12vw, 3.6rem); font-family:'Archivo Black','Nunito',sans-serif; color:var(--gold); line-height:1;}
+.end .sub2{color:var(--cream-dim); font-weight:800;}
+.end .polaroid{max-width:min(78%, 340px);}
+.endbtns{display:flex; flex-direction:column; gap:8px; align-items:center;}
+
+/* ---------- controls ---------- */
+.corner{position:fixed; top:calc(10px + env(safe-area-inset-top)); right:12px; display:flex; gap:8px; z-index:6;}
+.iconbtn{width:38px; height:38px; border-radius:12px; border:1.5px solid rgba(251,244,230,.35); background:rgba(255,255,255,.08); color:var(--cream); font-size:1.05rem; cursor:pointer; line-height:1; padding:0;}
+.top .iconbtn{width:32px; height:32px; font-size:.95rem; border-radius:10px; flex:0 0 auto;}
+.iconbtn.on{background:var(--gold); border-color:var(--gold); color:var(--ink);}
+
+/* ---------- bonus unlock ---------- */
+.bonus{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:12px; padding:12px 0;}
+.bonus .btitle{font-family:'Archivo Black','Nunito',sans-serif; font-size:clamp(1.2rem,6vw,1.7rem); color:var(--gold); line-height:1.15;}
+.bonus .polaroid{max-width:min(84%,380px); animation:bpop .5s cubic-bezier(.2,1.4,.4,1) backwards;}
+@keyframes bpop{from{transform:scale(.5) rotate(-8deg); opacity:0;}}
+.gal{display:flex; gap:8px; flex-wrap:wrap; justify-content:center; max-width:380px;}
+.gal .polaroid{width:82px; padding:4px 4px 12px; box-shadow:0 4px 12px rgba(0,0,0,.4);}
+.gal .polaroid::before{display:none;}
+.gal .locked{width:82px; height:94px; border-radius:5px; border:2px dashed rgba(251,244,230,.3); display:flex; align-items:center; justify-content:center; font-size:1.15rem; font-weight:900; color:var(--cream-dim); background:rgba(255,255,255,.05);}
+
+/* ---------- retro 80s theme ---------- */
+#app{position:relative; z-index:1;}
+body.retro{
+  --bg0:#0d0221; --bg1:#2b1055; --glow:#7a1fa0;
+  --cream:#eafcff; --cream-dim:#b9c8ea; --ink:#160533;
+  --gold:#ff2975; --gold-deep:#a81050; --gold-hi:#2de2e6;
+  --tape:rgba(45,226,230,.85); --neon2:#2de2e6;
+  --red:#ff2975; --blue:#8c1eff; --yellow:#ffd319; --green:#00e5a0;
+  background:linear-gradient(180deg,#2b1055 0%, #0d0221 62%); background-attachment:fixed;
+}
+body.retro::after{content:""; position:fixed; left:-25%; right:-25%; bottom:-8%; height:46%; z-index:0; pointer-events:none;
+  background:
+    linear-gradient(rgba(255,41,117,.33) 2px, transparent 2px) 0 0/100% 36px,
+    linear-gradient(90deg, rgba(45,226,230,.28) 2px, transparent 2px) 0 0/58px 100%;
+  transform:perspective(320px) rotateX(60deg); transform-origin:top;
+  -webkit-mask-image:linear-gradient(180deg,transparent,#000 30%); mask-image:linear-gradient(180deg,transparent,#000 30%);}
+body.retro::before{content:""; position:fixed; inset:0; z-index:4; pointer-events:none;
+  background:repeating-linear-gradient(180deg, rgba(0,0,0,.12) 0 1px, transparent 1px 3px); opacity:.55;}
+body.retro .title{font-family:'Press Start 2P','Archivo Black',sans-serif; font-size:clamp(1.05rem,5.4vw,1.8rem); line-height:1.5;
+  text-shadow:0 0 10px rgba(45,226,230,.9), 0 0 26px rgba(255,41,117,.55), 3px 3px 0 #a81050;}
+body.retro .title .amp{color:var(--neon2);}
+body.retro .kicker{letter-spacing:.3em; text-shadow:0 0 10px currentColor;}
+body.retro .bigpts{font-family:'Press Start 2P','Archivo Black',sans-serif; font-size:clamp(1.7rem,9vw,2.7rem); text-shadow:0 0 14px rgba(255,41,117,.9);}
+body.retro .tier{font-family:'Press Start 2P','Archivo Black',sans-serif; font-size:clamp(.95rem,4.6vw,1.4rem); line-height:1.5; text-shadow:0 0 10px rgba(45,226,230,.6);}
+body.retro .btitle{font-family:'Press Start 2P','Archivo Black',sans-serif; font-size:clamp(.8rem,4vw,1.1rem); line-height:1.6; text-shadow:0 0 12px currentColor;}
+body.retro .qtext{text-shadow:0 0 12px rgba(45,226,230,.35);}
+body.retro .scorechip, body.retro .qcount{font-family:'Press Start 2P',monospace; font-size:.55rem;}
+body.retro .scorechip{padding:8px 10px;}
+body.retro .tile{border:1.5px solid rgba(255,255,255,.28);}
+body.retro .t0{box-shadow:0 4px 0 #99114a, 0 0 16px rgba(255,41,117,.5);}
+body.retro .t1{box-shadow:0 4px 0 #4d0f96, 0 0 16px rgba(140,30,255,.5);}
+body.retro .t2{box-shadow:0 4px 0 #a8830c, 0 0 16px rgba(255,211,25,.45);}
+body.retro .t3{box-shadow:0 4px 0 #00805a, 0 0 16px rgba(0,229,160,.5);}
+body.retro .btn{box-shadow:0 4px 0 var(--gold-deep), 0 0 20px rgba(255,41,117,.55);}
+body.retro .btn.ghost{box-shadow:none;}
+body.retro .polaroid{box-shadow:0 10px 26px rgba(0,0,0,.6), 0 0 0 1.5px rgba(45,226,230,.45), 0 0 22px rgba(45,226,230,.3);}
+body.retro .banner.good{background:rgba(0,229,160,.16); box-shadow:inset 0 0 0 1.5px rgba(0,229,160,.6);}
+body.retro .banner.bad{background:rgba(255,41,117,.18); box-shadow:inset 0 0 0 1.5px rgba(255,41,117,.55);}
+body.retro .banner .pts{color:var(--neon2);}
+body.retro .exhibit-label{color:var(--neon2);}
+body.retro .timer{background:rgba(255,255,255,.10); box-shadow:0 0 10px rgba(45,226,230,.25);}
+.boot{min-height:100dvh; display:flex; align-items:center; justify-content:center; text-align:center; padding:20px;}
+.boot-t{font-family:'Archivo Black','Nunito',sans-serif; font-size:1.6rem; color:var(--gold); margin-bottom:8px;}
+.boot-s{font-weight:800; color:var(--cream);}
+.boot-box{margin:20px auto 0; max-width:36ch; background:#fbf4e6; color:#2a1e2b; border-radius:14px; padding:16px 18px; font-size:.92rem; line-height:1.5; text-align:left; box-shadow:0 10px 30px rgba(0,0,0,.4);}
+.boot-box i{color:#6d5a63; font-size:.84rem;}
+.btn.alt{background:transparent; color:var(--cream); box-shadow:inset 0 0 0 2px var(--gold);}
+.btn.alt:active{transform:translateY(3px); box-shadow:inset 0 0 0 2px var(--gold);}
+body.retro .btn.alt{box-shadow:inset 0 0 0 2px var(--gold), 0 0 14px rgba(255,41,117,.35);}
+.best{color:var(--gold); font-weight:800;}
+.recwrap{display:flex; gap:8px; justify-content:center; align-items:stretch; width:min(92%,340px);}
+.recwrap input{flex:1; min-width:0; border-radius:12px; border:1.5px solid rgba(251,244,230,.35);
+  background:rgba(255,255,255,.08); color:var(--cream); padding:10px 14px; font:inherit; font-weight:700;}
+.recwrap input::placeholder{color:var(--cream-dim); opacity:.8;}
+.btn.small{padding:10px 16px; font-size:.9rem; border-radius:12px; box-shadow:0 3px 0 var(--gold-deep);}
+.reclist{width:min(92%,340px); background:rgba(255,255,255,.06); border-radius:12px; padding:10px 14px; font-size:.86rem;}
+.reclist:empty{display:none;}
+.rectitle{font-weight:900; letter-spacing:.12em; text-transform:uppercase; font-size:.68rem; color:var(--gold); margin-bottom:6px;}
+.recrow{display:flex; justify-content:space-between; gap:12px; line-height:1.8;}
+body.retro .reclist{box-shadow:0 0 12px rgba(45,226,230,.2);}
+.buildtag{font-size:.62rem; color:rgba(251,244,230,.35); letter-spacing:.08em; margin:2px 0 0;}
+.chips{display:flex; gap:8px; justify-content:center; flex-wrap:wrap; width:min(92%,340px);}
+.chip{border:1.5px solid rgba(251,244,230,.35); background:rgba(255,255,255,.07); color:var(--cream-dim);
+  border-radius:999px; padding:6px 14px; font:inherit; font-weight:800; font-size:.8rem; cursor:pointer;}
+.chip.on{background:var(--gold); border-color:var(--gold); color:var(--ink);}
+.gal .polaroid[data-k]{cursor:pointer;}
+.lightbox{position:fixed; inset:0; z-index:60; background:rgba(18,8,22,.9); display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:14px; padding:22px; animation:lfade .18s ease;}
+@keyframes lfade{from{opacity:0}}
+.lightbox .polaroid{max-width:min(92vw,540px);}
+.lightbox img{max-height:68vh; width:auto; max-width:100%; object-fit:contain;}
+.lcap{color:var(--cream); font-weight:800; text-align:center; max-width:34ch; margin:0;}
+.lhint{color:var(--cream-dim); font-size:1.2rem; margin:0;}
+.plink{display:flex; gap:10px; align-items:center; justify-content:space-between; width:min(92%,340px);
+  background:rgba(255,255,255,.06); border-radius:12px; padding:8px 8px 8px 14px; font-size:.78rem; color:var(--cream-dim); text-align:left;}
+.plink span{flex:1; min-width:0; overflow-wrap:anywhere;}
+.hello{color:var(--cream); font-weight:800; margin:0;}
+.notyou{background:none; border:none; color:var(--cream-dim); text-decoration:underline; font:inherit; font-size:.75rem; cursor:pointer; padding:0 2px;}
+</style>
+</head>
+<body>
+<div id="app" role="main">
+  <div class="boot">
+    <div>
+      <div class="boot-t">Chloé &amp; Nöggi</div>
+      <div class="boot-s">Das Hochzeits-Kahoot startet …</div>
+      <div class="boot-box">
+        <b>Nichts passiert?</b> Dann zeigt dein Messenger nur eine Vorschau – das Spiel braucht einen richtigen Browser.<br><br>
+        iPhone: Teilen-Symbol antippen → «In Safari öffnen»<br>
+        Android: Menü (⋮) → «In Chrome öffnen»<br><br>
+        <i>Rien ne se passe&nbsp;? Ouvre le fichier dans Safari ou Chrome (bouton Partager).<br>
+        Stuck on this screen? Open the file in Safari or Chrome (share button).</i>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+"use strict";
+const IMG = __IMG__;
+const QUESTIONS = __DATA__;
+let TIME = 25000;
+const store={
+  get(k,d){ try{ const v=localStorage.getItem("nk_"+k); return v==null?d:JSON.parse(v); }
+            catch(e){ return (this.m && k in this.m)? this.m[k] : d; } },
+  set(k,v){ try{ localStorage.setItem("nk_"+k, JSON.stringify(v)); }
+            catch(e){ (this.m=this.m||{})[k]=v; } }
+};
+function esc(s){ return String(s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+const SUPA_URL = "https://opgbezlecbggnqzlvhja.supabase.co";
+const SUPA_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9wZ2JlemxlY2JnZ25xemx2aGphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc1OTczMTYsImV4cCI6MjEwMzE3MzMxNn0.9KVl_dPJnma7sAd6YkH_U0HKpKkpSUnzfU_hwxM4x_4";
+const SHAPES = ["▲","◆","●","■"];
+
+const I18N = {
+ de:{
+  kicker:"Chloé & Nöggi", title:'Das Hochzeits-<span class="amp">Kahoot</span>',
+  sub:"23 Fragen über den Bräutigam – gesammelt von der ganzen Crew.",
+  rules:"Pro Frage 25 Sekunden. Je schneller die richtige Antwort, desto mehr Punkte.",
+  start10:"Schnellrunde · 10 Fragen", startAll:"Alle 23 Fragen", qof:(i,n)=>`Frage ${i}/${n}`, ptsWord:"Punkte",
+  correct:"Richtig!", wrong:"Leider nein …", timeout:"Zeit abgelaufen!",
+  answerWas:"Richtig wäre gewesen:", streak:(x)=>`Serie ×${x}`,
+  next:"Weiter", last:"Zum Resultat", exhibit:"Beweisfoto",
+  result:"Dein Resultat", ofN:(c,n)=>`${c} von ${n} richtig`,
+  again:"Nochmals spielen",
+  prizesCap:"Die offiziellen Priisli: Ricola, Basler Läckerli, Appenzeller Biber.",
+  outtake:"Bonus-Outtake von Frank zeigen",
+  outtakeCap:"Frank: «Eini drvo will ich euch nid vorenthalte.»",
+  tiers:["Trauzeugen-Material","Innerer Kreis","Solider Hochzeitsgast","Wer bist du überhaupt?"],
+  bonusTitle:"Bonus-Foto freigeschaltet!", bonusSub:(s)=>`Serie ×${s} – weiter so!`,
+  galleryTitle:"Bonus-Galerie", unlockHint:"Je 3 Richtige in Serie schalten ein Bonus-Foto frei.",
+  bonusCaps:["Chica nochmals – sie hat es verdient.","Der Captain, ganz nah.","Sommer 1991: Krabbenjagd statt Game Boy.","Aus Heftis Archiv.","Das Beweisfoto zum Sony Ericsson.","Frisch aus Franks Archiv.","Fast on lime: das Agaven-Selfie."],
+  startBlitz:"Blitz · 10 Fragen à 10 Sek.", best:"Rekord", namePh:"Dein Name",
+  save:"Score speichern", saved:"Gespeichert ✓", recTitle:"Bestenliste", filtAll:"Alle", linkLbl:"Dein Link – Name & Galerie auf jedem Gerät", share:"Teilen", copied:"Kopiert ✓", wb:"Willkommen zurück", notYou:"nicht du?"
+ },
+ fr:{
+  kicker:"Chloé & Nöggi", title:'Le <span class="amp">Kahoot</span> du mariage',
+  sub:"23 questions sur le marié – rassemblées par toute l'équipe.",
+  rules:"25 secondes par question. Plus la bonne réponse arrive vite, plus elle rapporte de points.",
+  start10:"Partie rapide · 10 questions", startAll:"Les 23 questions", qof:(i,n)=>`Question ${i}/${n}`, ptsWord:"points",
+  correct:"Correct\u00a0!", wrong:"Eh non …", timeout:"Temps écoulé\u00a0!",
+  answerWas:"La bonne réponse était\u00a0:", streak:(x)=>`Série ×${x}`,
+  next:"Suivant", last:"Voir le résultat", exhibit:"Pièce à conviction",
+  result:"Ton résultat", ofN:(c,n)=>`${c} bonnes réponses sur ${n}`,
+  again:"Rejouer",
+  prizesCap:"Les prix officiels\u00a0: Ricola, Läckerli de Bâle, Biber d'Appenzell.",
+  outtake:"Voir le bonus de Frank",
+  outtakeCap:"Frank\u00a0: «\u00a0Eini drvo will ich euch nid vorenthalte.\u00a0»",
+  tiers:["Étoffe de témoin","Cercle rapproché","Solide invité de mariage","Mais qui es-tu, au juste\u00a0?"],
+  bonusTitle:"Photo bonus débloquée\u00a0!", bonusSub:(s)=>`Série ×${s} – continue\u00a0!`,
+  galleryTitle:"Galerie bonus", unlockHint:"Chaque série de 3 bonnes réponses débloque une photo bonus.",
+  bonusCaps:["Encore Chica – elle le mérite.","Le capitaine, de près.","Été 1991\u00a0: chasse aux crabes.","Des archives de Hefti.","La preuve pour le Sony Ericsson.","Tout droit des archives de Frank.","Presque on lime\u00a0: le selfie à l'agave."],
+  startBlitz:"Éclair · 10 questions à 10 s", best:"Record", namePh:"Ton nom",
+  save:"Enregistrer", saved:"Enregistré ✓", recTitle:"Meilleurs scores", filtAll:"Tous", linkLbl:"Ton lien – nom & galerie sur chaque appareil", share:"Partager", copied:"Copié ✓", wb:"Content de te revoir", notYou:"pas toi\u00a0?"
+ },
+ en:{
+  kicker:"Chloé & Nöggi", title:'The Wedding <span class="amp">Kahoot</span>',
+  sub:"23 questions about the groom – collected by the whole crew.",
+  rules:"25 seconds per question. The faster the correct answer, the more points.",
+  start10:"Quick round · 10 questions", startAll:"All 23 questions", qof:(i,n)=>`Question ${i}/${n}`, ptsWord:"points",
+  correct:"Correct!", wrong:"Nope …", timeout:"Time's up!",
+  answerWas:"The right answer was:", streak:(x)=>`Streak ×${x}`,
+  next:"Next", last:"See results", exhibit:"Exhibit A",
+  result:"Your result", ofN:(c,n)=>`${c} of ${n} correct`,
+  again:"Play again",
+  prizesCap:"The official prizes: Ricola, Basler Läckerli, Appenzeller Biber.",
+  outtake:"Show Frank's bonus outtake",
+  outtakeCap:"Frank: «Eini drvo will ich euch nid vorenthalte.»",
+  tiers:["Best-man material","Inner circle","Solid wedding guest","Wait, who are you again?"],
+  bonusTitle:"Bonus photo unlocked!", bonusSub:(s)=>`Streak ×${s} – keep going!`,
+  galleryTitle:"Bonus gallery", unlockHint:"Every 3 correct in a row unlocks a bonus photo.",
+  bonusCaps:["Chica again – she earned it.","The captain, up close.","Summer '91: crab hunting.","From Hefti's archive.","The Sony Ericsson evidence.","Straight from Frank's archive.","Almost on lime: the agave selfie."],
+  startBlitz:"Lightning · 10 questions · 10 s", best:"Best", namePh:"Your name",
+  save:"Save score", saved:"Saved ✓", recTitle:"High scores", filtAll:"All", linkLbl:"Your link – name & gallery on any device", share:"Share", copied:"Copied ✓", wb:"Welcome back", notYou:"not you?"
+ }
+};
+
+let lang = "de";
+let phase = "start";           // start | question | reveal | end
+let qi = 0, score = 0, streak = 0, correctCount = 0, round = [];
+let order = [];                // per-question shuffled option index arrays
+let deadline = 0, rafId = 0;
+let picked = -1, lastGain = 0, lastBonus = 0, timedOut = false, lastSec = 99;
+let pendingBonusKey = null, lastBonusKey = null, endFx = false, savedThisGame = false, gameMode = "23";
+let collected = store.get("bonus", []);
+let records = store.get("records", []);
+let lastName = store.get("name", "");
+let playerToken = store.get("ptoken", "");
+let retroOn = store.get("retro", false);
+let soundOn = store.get("sound", true);
+if(retroOn) document.body.classList.add("retro");
+const BONUS = ["bonus1","bonus2","bonus3","bonus4","bonus5","bonus6","bonus7"];
+const app = document.getElementById("app");
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+function t(){ return I18N[lang]; }
+function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function shuffled(n){
+  const a=[...Array(n).keys()];
+  for(let i=n-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+
+function setLang(l){
+  lang = l; store.set("lang", l);
+  if(phase==="start") renderStart();
+  else if(phase==="question") renderQuestion(false);
+  else if(phase==="reveal") renderReveal();
+  else if(phase==="bonus") renderBonus(true, lastBonusKey);
+  else renderEnd();
+}
+function cycleLang(){ setLang(lang==="de"?"fr":lang==="fr"?"en":"de"); }
+
+/* ---------------- start ---------------- */
+function renderStart(){
+  phase="start";
+  app.innerHTML = `
+  <div class="corner">${ctl()}</div>
+  <div class="start">
+    <div class="pills" role="group" aria-label="Language">
+      ${["de","fr","en"].map(l=>`<button class="pill ${l===lang?"on":""}" data-lang="${l}">${l.toUpperCase()}</button>`).join("")}
+    </div>
+    <div class="fan" aria-hidden="true">
+      <span class="polaroid f1"><img src="${IMG.captain}" alt=""></span>
+      <span class="polaroid f2"><img src="${IMG.badtaste}" alt=""></span>
+      <span class="polaroid f3"><img src="${IMG.gondola}" alt=""></span>
+    </div>
+    <div class="kicker">${t().kicker}</div>
+    <h1 class="title">${t().title}</h1>
+    <p class="sub">${t().sub}</p>
+    ${lastName? `<p class="hello">👋 ${t().wb}, ${esc(lastName)}! <button class="notyou" id="notyou">${t().notYou}</button></p>` : ""}
+    <button class="btn" id="startbtn">${t().start10}</button>
+    <button class="btn alt" id="startall">${t().startAll}</button>
+    <button class="btn alt" id="startblitz">${t().startBlitz}</button>
+    <p class="rules">${t().rules}</p>
+    <p class="buildtag">__BUILD__</p>
+    <p class="rules best" id="bestline" style="${records.length?"":"display:none"}">${records.length? `🏆 ${t().best}: ${records[0].score} · ${esc(records[0].name)} 📱` : ""}</p>
+  </div>`;
+  app.querySelectorAll("[data-lang]").forEach(b=>b.onclick=()=>setLang(b.dataset.lang));
+  bindCtl();
+  document.getElementById("startbtn").onclick = ()=>startGame(10);
+  document.getElementById("startall").onclick = ()=>startGame();
+  document.getElementById("startblitz").onclick = ()=>startGame(10, 10000);
+  const ny=document.getElementById("notyou");
+  if(ny) ny.onclick=()=>{
+    playerToken=""; lastName=""; collected=[];
+    store.set("ptoken",""); store.set("name",""); store.set("bonus",[]);
+    renderStart();
+  };
+  refreshBoard();
+}
+
+function startGame(n, tms){
+  qi=0; score=0; streak=0; correctCount=0;
+  TIME = tms || 25000;
+  gameMode = tms ? "⚡10" : (n ? "10" : "23");
+  pendingBonusKey=null; endFx=false; savedThisGame=false;
+  A.ensure(); A.unlock(); if(soundOn) A.music();
+  round = shuffled(QUESTIONS.length).slice(0, n || QUESTIONS.length).sort((a,b)=>a-b);
+  order = round.map(()=>shuffled(4));
+  beginQuestion();
+}
+
+/* ---------------- question ---------------- */
+function beginQuestion(){
+  picked=-1; timedOut=false; lastGain=0; lastBonus=0; lastSec=99;
+  deadline = performance.now() + TIME;
+  renderQuestion(true);
+  tick();
+}
+function topBar(){
+  return `<div class="top">
+    <button class="langcycle" id="lc" title="DE / FR / EN">${lang.toUpperCase()}</button>
+    ${ctl()}
+    <span class="qcount">${t().qof(qi+1, round.length)}</span>
+    <span class="scorechip">★ ${score}</span>
+  </div>`;
+}
+function renderQuestion(fresh){
+  phase="question";
+  const q=QUESTIONS[round[qi]], L=q[lang], od=order[qi];
+  const tilt = qi%2 ? "tilt-r" : "tilt-l";
+  app.innerHTML = `${topBar()}
+  <div class="stage">
+    <div class="photo-wrap"><span class="polaroid ${tilt}"><img src="${IMG[q.img]}" alt=""></span></div>
+    <div class="timer" aria-hidden="true"><i id="tbar"></i></div>
+    <div class="qtext">${esc(L.q)}</div>
+    <div class="grid" id="grid" data-correct="${q.correct}">
+      ${od.map((oi,pos)=>`<button class="tile t${pos}" data-oi="${oi}" style="${fresh?"":"animation:none"}">
+         <span class="shape">${SHAPES[pos]}</span><span>${esc(L.o[oi])}</span></button>`).join("")}
+    </div>
+  </div>`;
+  document.getElementById("lc").onclick = cycleLang;
+  bindCtl();
+  app.querySelectorAll(".tile").forEach(b=>b.onclick=()=>pick(+b.dataset.oi));
+}
+function tick(){
+  cancelAnimationFrame(rafId);
+  const loop=()=>{
+    const rem = deadline - performance.now();
+    const bar = document.getElementById("tbar");
+    if(bar) bar.style.width = Math.max(0, rem/TIME*100)+"%";
+    const sec = Math.ceil(rem/1000);
+    if(sec!==lastSec){ lastSec=sec; if(sec>=1 && sec<=5) A.tick(sec%2===0); }
+    if(rem<=0){ onTimeout(); return; }
+    if(phase==="question") rafId=requestAnimationFrame(loop);
+  };
+  rafId=requestAnimationFrame(loop);
+}
+function pick(oi){
+  if(phase!=="question") return;
+  const rem = Math.max(0, deadline - performance.now());
+  picked=oi;
+  const ok = oi===QUESTIONS[round[qi]].correct;
+  if(ok){
+    streak++; correctCount++;
+    lastGain = 500 + Math.round(500*rem/TIME);
+    lastBonus = streak>=2 ? 50*Math.min(streak-1,4) : 0;
+    score += lastGain + lastBonus;
+    if(streak%3===0){
+      const nk = BONUS.find(k=>!collected.includes(k));
+      if(nk) pendingBonusKey = nk;
+    }
+    A.correct(streak);
+    burst();
+  } else { streak=0; A.wrong(); }
+  renderReveal();
+}
+function onTimeout(){
+  if(phase!=="question") return;
+  timedOut=true; picked=-1; streak=0;
+  A.timeout();
+  renderReveal();
+}
+
+/* ---------------- reveal ---------------- */
+function renderReveal(){
+  phase="reveal";
+  cancelAnimationFrame(rafId);
+  const q=QUESTIONS[round[qi]], L=q[lang], od=order[qi];
+  const ok = picked===q.correct;
+  const img = q.reveal ? IMG[q.reveal] : IMG[q.img];
+  const tilt = qi%2 ? "tilt-l" : "tilt-r";
+  let banner;
+  if(ok){
+    banner = `<div class="banner good">${t().correct} <span class="pts">+${lastGain+lastBonus}</span>
+      ${lastBonus?`<small>${t().streak(streak)} · +${lastBonus}</small>`:""}</div>`;
+  } else {
+    banner = `<div class="banner bad">${timedOut?t().timeout:t().wrong}
+      <small>${t().answerWas} ${esc(L.o[q.correct])}</small></div>`;
+  }
+  app.innerHTML = `${topBar()}
+  <div class="stage">
+    ${q.reveal?`<div class="exhibit-label">${t().exhibit}</div>`:""}
+    <div class="photo-wrap"><span class="polaroid ${tilt}"><img src="${img}" alt=""></span></div>
+    ${banner}
+    <div class="qtext" style="font-size:1rem; opacity:.85">${esc(L.q)}</div>
+    <div class="grid">
+      ${od.map((oi,pos)=>{
+        const cls = oi===q.correct ? "win" : (oi===picked ? "lose" : "dim");
+        return `<button class="tile t${pos} ${cls}" disabled style="animation:none">
+          <span class="shape">${SHAPES[pos]}</span><span>${esc(L.o[oi])}</span></button>`;
+      }).join("")}
+    </div>
+    <div class="nextrow"><button class="btn" id="next">${qi<round.length-1?t().next:t().last}</button></div>
+  </div>`;
+  document.getElementById("lc").onclick = cycleLang;
+  bindCtl();
+  document.getElementById("next").onclick = next;
+  document.getElementById("next").focus({preventScroll:true});
+}
+function advance(){
+  if(qi<round.length-1){ qi++; beginQuestion(); }
+  else renderEnd();
+}
+function next(){
+  A.tap();
+  if(pendingBonusKey){
+    const k = pendingBonusKey; pendingBonusKey = null;
+    if(!collected.includes(k)){ collected.push(k); store.set("bonus", collected); playerSync(true); }
+    renderBonus(false, k); return;
+  }
+  advance();
+}
+function renderBonus(re, key){
+  phase="bonus";
+  if(!re){ A.bonus(); burst(); }
+  const k = key || lastBonusKey; lastBonusKey = k;
+  const bi = BONUS.indexOf(k);
+  app.innerHTML = `${topBar()}
+  <div class="bonus">
+    <div class="btitle">${t().bonusTitle}</div>
+    <div class="sub2">${t().bonusSub(streak)}</div>
+    <span class="polaroid ${bi%2?"tilt-l":"tilt-r"}"><img src="${IMG[k]}" alt=""></span>
+    <p class="sub" style="font-size:.9rem">${t().bonusCaps[bi]}</p>
+    <button class="btn" id="next">${qi<round.length-1?t().next:t().last}</button>
+  </div>`;
+  document.getElementById("lc").onclick = cycleLang;
+  bindCtl();
+  const n=document.getElementById("next");
+  n.onclick = ()=>{ A.tap(); advance(); };
+  n.focus({preventScroll:true});
+}
+
+/* ---------------- end ---------------- */
+function tierIdx(){
+  const r = correctCount/round.length;
+  return r>=0.85?0 : r>=0.6?1 : r>=0.35?2 : 3;
+}
+function renderEnd(){
+  phase="end";
+  if(!endFx){ endFx=true; A.fanfare(); if(!reduced){ burst(); setTimeout(burst,300); } }
+  app.innerHTML = `
+  <div class="corner">${ctl()}</div>
+  <div class="end">
+    <div class="pills">${["de","fr","en"].map(l=>`<button class="pill ${l===lang?"on":""}" data-lang="${l}">${l.toUpperCase()}</button>`).join("")}</div>
+    <div class="kicker">${t().result}</div>
+    <div class="bigpts">${score}</div>
+    <div class="sub2">${t().ofN(correctCount, round.length)}</div>
+    <div class="tier">${t().tiers[tierIdx()]}</div>
+    <div class="recwrap" id="recwrap">
+      <input id="pname" maxlength="14" placeholder="${t().namePh}" value="${esc(lastName)}">
+      <button class="btn small" id="savebtn">${t().save}</button>
+    </div>
+    ${playerToken? `<div class="plink"><span>🔗 ${t().linkLbl}</span><button class="btn small" id="sharebtn">${t().share}</button></div>` : ""}
+    <div class="chips" id="chips">${chipsHtml()}</div>
+    <div class="reclist" id="reclist">${recListHtml()}</div>
+    <div class="kicker" style="font-size:.68rem; letter-spacing:.18em">${t().galleryTitle} · ${collected.length}/${BONUS.length}</div>
+    <div class="gal">${BONUS.map(k=> collected.includes(k)
+      ? `<span class="polaroid" data-k="${k}"><img src="${IMG[k]}" alt=""></span>`
+      : `<span class="locked">?</span>`).join("")}</div>
+    <p class="rules" style="font-size:.75rem; margin:0">${t().unlockHint}</p>
+    <div class="endbtns">
+      <button class="btn" id="again">${t().again}</button>
+      ${correctCount > round.length/2 ? `<button class="btn ghost" id="ot">${t().outtake}</button>` : ""}
+    </div>
+    <div id="otbox"></div>
+  </div>`;
+  app.querySelectorAll("[data-lang]").forEach(b=>b.onclick=()=>setLang(b.dataset.lang));
+  bindCtl();
+  bindChips();
+  const shb=document.getElementById("sharebtn");
+  if(shb) shb.onclick = async ()=>{
+    const url = personalLink();
+    try{ await navigator.share({ title:"Nöggi-Kahoot", url }); }
+    catch(e){
+      try{ await navigator.clipboard.writeText(url); shb.textContent=t().copied; }
+      catch(e2){ shb.previousElementSibling.textContent = url; }
+    }
+  };
+  app.querySelectorAll(".gal .polaroid[data-k]").forEach(el=>el.onclick=()=>openLight(el.dataset.k));
+  const sb2=document.getElementById("savebtn");
+  if(savedThisGame){ sb2.textContent=t().saved; sb2.disabled=true; document.getElementById("pname").disabled=true; }
+  sb2.onclick = saveRecord;
+  refreshBoard();
+  document.getElementById("again").onclick = ()=>{ renderStart(); };
+  const ot=document.getElementById("ot");
+  if(ot) ot.onclick = (e)=>{
+    document.getElementById("otbox").innerHTML =
+      `<span class="polaroid tilt-r" style="max-width:min(78%,320px)"><img src="${IMG.outtake}" alt=""></span>
+       <p class="sub" style="font-size:.85rem">${t().outtakeCap}</p>`;
+    e.target.style.display="none";
+  };
+}
+
+/* ---------------- controls (sound + theme) ---------------- */
+function ctl(){
+  return `<button class="iconbtn" id="sb" aria-pressed="${soundOn}" title="Sound">${soundOn?"🔊":"🔇"}</button>`+
+         `<button class="iconbtn${retroOn?" on":""}" id="tb" aria-pressed="${retroOn}" title="80s">🕹️</button>`;
+}
+function bindCtl(){
+  const sb=document.getElementById("sb"), tb=document.getElementById("tb");
+  if(sb) sb.onclick=()=>setSound(!soundOn);
+  if(tb) tb.onclick=()=>setRetro(!retroOn);
+}
+function setSound(v){
+  soundOn=v; A.mute(!v); store.set("sound", v);
+  if(v){ A.ensure(); A.unlock(); }
+  if(v && phase!=="start") A.music();
+  document.querySelectorAll("#sb").forEach(b=>{ b.textContent=v?"🔊":"🔇"; b.setAttribute("aria-pressed",v); });
+}
+function setRetro(v){
+  retroOn=v; document.body.classList.toggle("retro",v); store.set("retro", v);
+  document.querySelectorAll("#tb").forEach(b=>{ b.classList.toggle("on",v); b.setAttribute("aria-pressed",v); });
+  A.tap();
+}
+
+/* ---------------- audio engine (all synthesized, offline) ---------------- */
+const A=(()=>{
+  let ctx=null, mg=null, sg=null, tId=0, nextT=0, st=0, musicOn=false, muted=false, unlockEl=null;
+  const SILENT="data:audio/wav;base64,UklGRmQGAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YUAGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+  function unlock(){
+    try{
+      if(!unlockEl){
+        unlockEl=new Audio(SILENT);
+        unlockEl.loop=true;
+        unlockEl.setAttribute("playsinline","");
+      }
+      if(!muted) unlockEl.play().catch(()=>{});
+    }catch(e){}
+    try{
+      if(ctx){
+        if(ctx.state!=="running") ctx.resume().catch(()=>{});
+        const b=ctx.createBuffer(1,1,22050), s=ctx.createBufferSource();
+        s.buffer=b; s.connect(ctx.destination); s.start(0);
+      }
+    }catch(e){}
+  }
+  const mtof=m=>440*Math.pow(2,(m-69)/12);
+  function ensure(){
+    if(ctx){ if(ctx.state==="suspended") ctx.resume().catch(()=>{}); return true; }
+    try{
+      const AC=window.AudioContext||window.webkitAudioContext;
+      if(!AC) return false;
+      ctx=new AC();
+      mg=ctx.createGain(); mg.gain.value=muted?0.0001:0.5; mg.connect(ctx.destination);
+      sg=ctx.createGain(); sg.gain.value=muted?0.0001:0.9; sg.connect(ctx.destination);
+      if(ctx.state!=="running") ctx.resume().catch(()=>{});
+      document.addEventListener("visibilitychange",()=>{
+        if(!document.hidden && ctx && ctx.state!=="running") ctx.resume().catch(()=>{});
+      });
+    }catch(e){ ctx=null; return false; }
+    return true;
+  }
+  function env(g,t0,a,d,peak){
+    g.gain.setValueAtTime(0.0001,t0);
+    g.gain.exponentialRampToValueAtTime(Math.max(peak,0.0002),t0+a);
+    g.gain.exponentialRampToValueAtTime(0.0001,t0+a+d);
+  }
+  function tone(dest,f0,t0,dur,type,peak,f1){
+    try{
+      const o=ctx.createOscillator(), g=ctx.createGain();
+      o.type=type; o.frequency.setValueAtTime(f0,t0);
+      if(f1) o.frequency.exponentialRampToValueAtTime(Math.max(f1,1),t0+dur);
+      env(g,t0,0.008,dur,peak);
+      o.connect(g); g.connect(dest); o.start(t0); o.stop(t0+dur+0.06);
+    }catch(e){}
+  }
+  function noise(dest,t0,dur,peak,hp){
+    try{
+      const b=ctx.createBuffer(1,Math.max(1,ctx.sampleRate*dur|0),ctx.sampleRate);
+      const d=b.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1;
+      const n=ctx.createBufferSource(); n.buffer=b;
+      const f=ctx.createBiquadFilter(); f.type="highpass"; f.frequency.value=hp||5000;
+      const g=ctx.createGain(); env(g,t0,0.004,dur,peak);
+      n.connect(f); f.connect(g); g.connect(dest); n.start(t0);
+    }catch(e){}
+  }
+  const ROOT=[33,29,36,31];                       // Am F C G
+  const CH=[[57,60,64],[53,57,60],[48,52,55],[55,59,62]];
+  function step16(s,t0){
+    const bar=(s>>4)&3, s16=s&15;
+    if(s16===0||s16===8) tone(mg,105,t0,.09,"sine",.30,42);
+    if(s16%2===1) noise(mg,t0,.03,.05,6000);
+    if(s16%2===0){ const oct=(s16%4===2)?12:0; tone(mg,mtof(ROOT[bar]+12+oct),t0,.16,"triangle",.16); }
+    if(s16===0){ CH[bar].forEach(m=>{ tone(mg,mtof(m+12)*0.997,t0,2.3,"sawtooth",.018); tone(mg,mtof(m+12)*1.003,t0,2.3,"sawtooth",.018); }); }
+    if(s16%8===4) tone(mg,mtof(CH[bar][(s>>2)%3]+24),t0,.12,"square",.035);
+  }
+  function sched(){
+    if(!ctx||!musicOn) return;
+    if(nextT<ctx.currentTime-0.2) nextT=ctx.currentTime+0.05;
+    while(nextT<ctx.currentTime+0.9){ step16(st,nextT); st=(st+1)&63; nextT+=0.15; }
+  }
+  return {
+    ensure, unlock,
+    music(){ if(!ensure()) return; if(musicOn) return;
+      musicOn=true; st=0; nextT=ctx.currentTime+0.08;
+      clearInterval(tId); tId=setInterval(sched,250); },
+    mute(m){ muted=m;
+      try{ if(unlockEl){ if(m) unlockEl.pause(); else unlockEl.play().catch(()=>{}); } }catch(e){}
+      if(!ctx){ if(!m) ensure(); if(!ctx) return; }
+      mg.gain.setTargetAtTime(m?0.0001:0.5, ctx.currentTime, .05);
+      sg.gain.setTargetAtTime(m?0.0001:0.9, ctx.currentTime, .05);
+      if(!m && ctx.state==="suspended") ctx.resume().catch(()=>{}); },
+    tap(){ if(muted||!ensure())return; tone(sg,620,ctx.currentTime,.05,"square",.12,880); },
+    correct(stk){ if(muted||!ensure())return; const t0=ctx.currentTime;
+      [523,659,784,1046].forEach((f,i)=>tone(sg,f,t0+i*.07,.12,"square",.16));
+      if(stk>=2) tone(sg,1319,t0+.30,.14,"square",.13); },
+    wrong(){ if(muted||!ensure())return; const t0=ctx.currentTime;
+      tone(sg,190,t0,.32,"sawtooth",.20,80); tone(sg,95,t0+.02,.30,"square",.10,60); },
+    tick(alt){ if(muted||!ensure())return; tone(sg,alt?1250:940,ctx.currentTime,.035,"sine",.10); },
+    timeout(){ if(muted||!ensure())return; tone(sg,170,ctx.currentTime,.5,"sawtooth",.18,60); },
+    bonus(){ if(muted||!ensure())return; const t0=ctx.currentTime;
+      [523,587,659,784,880,1046].forEach((f,i)=>tone(sg,f,t0+i*.06,.11,"triangle",.16));
+      noise(sg,t0+.36,.25,.05,7000); },
+    fanfare(){ if(muted||!ensure())return; const t0=ctx.currentTime;
+      [[523,0],[523,.14],[659,.28],[784,.42]].forEach(p=>tone(sg,p[0],t0+p[1],.13,"square",.15));
+      [523,659,784,1046].forEach(f=>tone(sg,f,t0+.60,.7,"square",.07)); }
+  };
+})();
+
+let boardRows = null, boardFilter = "all";
+function recListHtml(){
+  const src = boardRows || records;
+  const rows = boardFilter==="all" ? src : src.filter(r=>r.mode===boardFilter);
+  const top = rows.slice(0,8);
+  const icon = boardRows ? "🌍" : "📱";
+  if(!top.length) return `<div class="rectitle">${t().recTitle} ${icon}</div><div class="recrow"><span>–</span><span></span></div>`;
+  return `<div class="rectitle">${t().recTitle} ${icon}</div>` + top.map((r,i)=>
+    `<div class="recrow"><span>${i+1}. ${esc(r.name)}</span><span>${r.mode} · <b>${r.score}</b></span></div>`).join("");
+}
+function chipsHtml(){
+  return ["all","23","10","⚡10"].map(f=>
+    `<button class="chip ${boardFilter===f?"on":""}" data-f="${f}">${f==="all"?t().filtAll:f}</button>`).join("");
+}
+function bindChips(){
+  document.querySelectorAll("#chips .chip").forEach(c=>c.onclick=()=>{
+    boardFilter=c.dataset.f;
+    document.querySelectorAll("#chips .chip").forEach(x=>x.classList.toggle("on",x.dataset.f===boardFilter));
+    const el=document.getElementById("reclist");
+    if(el) el.innerHTML=recListHtml();
+    A.tap();
+  });
+}
+async function cloudTop(){
+  if(!SUPA_URL) return null;
+  try{
+    const r = await fetch(SUPA_URL+"/rest/v1/scores?select=name,score,mode&order=score.desc&limit=50",
+      { headers:{ apikey:SUPA_KEY, Authorization:"Bearer "+SUPA_KEY } });
+    if(!r.ok) return null;
+    const rows = await r.json();
+    return Array.isArray(rows) ? rows : null;
+  }catch(e){ return null; }
+}
+async function cloudSave(rec){
+  if(!SUPA_URL) return;
+  try{
+    await fetch(SUPA_URL+"/rest/v1/scores", {
+      method:"POST",
+      headers:{ apikey:SUPA_KEY, Authorization:"Bearer "+SUPA_KEY,
+                "Content-Type":"application/json", Prefer:"return=minimal" },
+      body: JSON.stringify({ name:rec.name, score:rec.score, correct:rec.correct, len:rec.len, mode:rec.mode })
+    });
+  }catch(e){}
+}
+function newToken(){
+  try{ return crypto.randomUUID(); }
+  catch(e){ return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,c=>{
+    const r=Math.random()*16|0; return (c==="x"?r:(r&3|8)).toString(16); }); }
+}
+async function rpc(fn, body){
+  if(!SUPA_URL) return null;
+  try{
+    const r = await fetch(SUPA_URL+"/rest/v1/rpc/"+fn, {
+      method:"POST",
+      headers:{ apikey:SUPA_KEY, Authorization:"Bearer "+SUPA_KEY, "Content-Type":"application/json" },
+      body: JSON.stringify(body)
+    });
+    if(!r.ok) return null;
+    const txt = await r.text();
+    return txt ? JSON.parse(txt) : true;
+  }catch(e){ return null; }
+}
+async function playerSync(push){
+  if(!playerToken) return;
+  if(push){ rpc("player_upsert",{tok:playerToken,pname:lastName||"???",pcollected:collected,pfp:FP}); return; }
+  const rows = await rpc("player_get",{tok:playerToken});
+  if(rows && rows.length){
+    const srv = rows[0];
+    if(srv.name){ lastName = srv.name; store.set("name", lastName); }
+    const merged = new Set([...(srv.collected||[]), ...collected]);
+    collected = BONUS.filter(k=>merged.has(k));
+    store.set("bonus", collected);
+    rpc("player_upsert",{tok:playerToken,pname:lastName||"???",pcollected:collected,pfp:FP});
+    if(phase==="end") renderEnd();
+  }
+}
+function personalLink(){ return location.origin+location.pathname+"#p="+playerToken; }
+async function refreshBoard(){
+  const rows = await cloudTop();
+  if(!rows || !rows.length) return;
+  boardRows = rows;
+  const el = document.getElementById("reclist");
+  if(el && phase==="end") el.innerHTML = recListHtml();
+  const bl = document.getElementById("bestline");
+  if(bl && phase==="start"){
+    bl.innerHTML = `🏆 ${t().best}: ${rows[0].score} · ${esc(rows[0].name)} 🌍`;
+    bl.style.display = "";
+  }
+}
+async function finishSave(name){
+  if(!playerToken){
+    const rows = await rpc("player_by_name",{pname:name});
+    if(rows && rows.length===1 && rows[0].token){
+      playerToken = rows[0].token;
+      const merged = new Set([...(rows[0].collected||[]), ...collected]);
+      collected = BONUS.filter(k=>merged.has(k));
+      store.set("bonus", collected);
+    } else {
+      playerToken = newToken();
+    }
+    store.set("ptoken", playerToken);
+  }
+  playerSync(true);
+}
+function saveRecord(){
+  if(savedThisGame) return;
+  const inp=document.getElementById("pname");
+  const name=(inp.value||"").trim() || "???";
+  lastName=name; store.set("name", name);
+  records.push({name, score, correct:correctCount, len:round.length, mode:gameMode, ts:Date.now()});
+  records.sort((a,b)=>b.score-a.score);
+  records=records.slice(0,50);
+  store.set("records", records);
+  savedThisGame=true;
+  finishSave(name);
+  cloudSave({name, score, correct:correctCount, len:round.length, mode:gameMode}).then(refreshBoard);
+  A.tap();
+  const b=document.getElementById("savebtn");
+  b.textContent=t().saved; b.disabled=true; inp.disabled=true;
+  document.getElementById("reclist").innerHTML=recListHtml();
+  bindChips();
+}
+
+function openLight(k){
+  const bi = BONUS.indexOf(k);
+  const d = document.createElement("div");
+  d.className = "lightbox";
+  d.innerHTML = `<span class="polaroid"><img src="${IMG[k]}" alt=""></span>
+    <p class="lcap">${t().bonusCaps[bi]||""}</p><p class="lhint">✕</p>`;
+  d.onclick = ()=>{ d.remove(); };
+  document.body.appendChild(d);
+  A.tap();
+}
+
+/* ---------------- confetti ---------------- */
+function burst(){
+  if(reduced) return;
+  const cols = retroOn
+    ? ["#ff2975","#2de2e6","#ffd319","#8c1eff","#00e5a0","#eafcff"]
+    : ["#d94a47","#3d6bd1","#e3a61c","#47934f","#e9b44c","#fbf4e6"];
+  for(let i=0;i<26;i++){
+    const s=document.createElement("span");
+    s.className="cf";
+    const a=Math.random()*Math.PI*2, d=90+Math.random()*220;
+    s.style.setProperty("--dx", Math.cos(a)*d+"px");
+    s.style.setProperty("--dy", (Math.sin(a)*d+160)+"px");
+    s.style.setProperty("--rr", (Math.random()*720-360)+"deg");
+    s.style.background=cols[i%cols.length];
+    s.style.animationDelay=(Math.random()*0.1)+"s";
+    document.body.appendChild(s);
+    setTimeout(()=>s.remove(), 1500);
+  }
+}
+
+/* ---------------- keyboard ---------------- */
+document.addEventListener("keydown",(e)=>{
+  if(phase==="question" && ["1","2","3","4"].includes(e.key)){
+    const b=app.querySelectorAll(".tile")[+e.key-1];
+    if(b) pick(+b.dataset.oi);
+  } else if((phase==="reveal"||phase==="bonus") && (e.key==="Enter"||e.key===" ")){
+    e.preventDefault(); const n=document.getElementById("next"); if(n) n.click();
+  }
+});
+
+function computeFp(){
+  try{
+    const c=document.createElement("canvas"); c.width=280; c.height=60;
+    const x=c.getContext("2d");
+    x.textBaseline="alphabetic"; x.fillStyle="#f60"; x.fillRect(60,4,120,28);
+    x.fillStyle="#069"; x.font="15px Arial"; x.fillText("Nöggi-Kahoot 🥨🚲 fjord",2,20);
+    x.fillStyle="rgba(102,204,0,.7)"; x.font="17px 'Times New Roman'"; x.fillText("Nöggi-Kahoot 🥨🚲 fjord",4,42);
+    const g=x.createLinearGradient(0,0,280,0); g.addColorStop(0,"#a00"); g.addColorStop(1,"#00a");
+    x.strokeStyle=g; x.lineWidth=2.5; x.beginPath(); x.arc(140,30,24,0.3,5.9); x.stroke();
+    let s=c.toDataURL();
+    const cv=document.createElement("canvas");
+    const glx=cv.getContext("webgl")||cv.getContext("experimental-webgl");
+    if(glx){
+      const dbg=glx.getExtension("WEBGL_debug_renderer_info");
+      s+="|"+(dbg? glx.getParameter(dbg.UNMASKED_VENDOR_WEBGL)+"/"+glx.getParameter(dbg.UNMASKED_RENDERER_WEBGL)
+               : glx.getParameter(glx.VENDOR)+"/"+glx.getParameter(glx.RENDERER));
+    }
+    s+="|"+screen.width+"x"+screen.height+"x"+(window.devicePixelRatio||1)
+      +"|"+(navigator.hardwareConcurrency||"")+"|"+(navigator.maxTouchPoints||"")
+      +"|"+(navigator.language||"")+"|"+((Intl.DateTimeFormat().resolvedOptions().timeZone)||"");
+    let h=2166136261>>>0;
+    for(let i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h,16777619)>>>0; }
+    let h2=5381>>>0;
+    for(let i=s.length-1;i>=0;i--){ h2=(Math.imul(h2,33)^s.charCodeAt(i))>>>0; }
+    return h.toString(16)+h2.toString(16);
+  }catch(e){ return ""; }
+}
+const FP = computeFp();
+function adoptHash(){
+  const m = (location.hash||"").match(/p=([0-9a-fA-F-]{16,})/);
+  if(m && m[1]!==playerToken){ playerToken = m[1]; store.set("ptoken", playerToken); playerSync(false); }
+}
+async function identify(){
+  adoptHash();
+  const t0 = playerToken, n0 = lastName;
+  if(!playerToken && FP){
+    const rows = await rpc("player_by_fp",{pfp:FP});
+    if(rows && rows.length===1 && rows[0].token){
+      playerToken = rows[0].token;
+      store.set("ptoken", playerToken);
+    }
+  }
+  await playerSync(false);
+  if(phase==="start" && (playerToken!==t0 || lastName!==n0)) renderStart();
+}
+identify();
+window.addEventListener("hashchange", ()=>{ adoptHash(); });
+window.addEventListener("pointerdown", ()=>{ A.ensure(); A.unlock(); }, {passive:true});
+window.addEventListener("touchend", ()=>{ A.unlock(); }, {passive:true});
+renderStart();
+</script>
+</body>
+</html>

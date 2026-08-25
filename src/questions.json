@@ -1,0 +1,763 @@
+[
+ {
+  "id": "chica",
+  "img": "chica",
+  "correct": 1,
+  "sure": true,
+  "de": {
+   "q": "Martin spielte mit dem Hund der Familie Rüegg. Der hiess:",
+   "o": [
+    "Wuffi",
+    "Chica",
+    "Bella",
+    "Lumpi"
+   ]
+  },
+  "fr": {
+   "q": "Martin jouait avec le chien de la famille Rüegg, nommé :",
+   "o": [
+    "Wuffi",
+    "Chica",
+    "Bella",
+    "Lumpi"
+   ]
+  },
+  "en": {
+   "q": "Martin loved playing with the Rüegg family dog, whose name was:",
+   "o": [
+    "Wuffi",
+    "Chica",
+    "Bella",
+    "Lumpi"
+   ]
+  }
+ },
+ {
+  "id": "grumpy",
+  "img": "grumpy",
+  "correct": 1,
+  "sure": true,
+  "de": {
+   "q": "Martin war verärgert, weil …",
+   "o": [
+    "er kein Eis bekam",
+    "er fotografiert wurde",
+    "ihm zu heiss war",
+    "sein Bruder ihn neckte"
+   ]
+  },
+  "fr": {
+   "q": "Martin était contrarié parce que …",
+   "o": [
+    "on ne lui avait pas donné de glace",
+    "on le prenait en photo",
+    "il avait trop chaud",
+    "son frère se moquait de lui"
+   ]
+  },
+  "en": {
+   "q": "Martin was grumpy because …",
+   "o": [
+    "he didn't get any ice cream",
+    "he was being photographed",
+    "he was too hot",
+    "his brother was teasing him"
+   ]
+  }
+ },
+ {
+  "id": "captain",
+  "img": "captain",
+  "correct": 3,
+  "sure": true,
+  "de": {
+   "q": "Captain Martin …",
+   "o": [
+    "nahm Segelunterricht",
+    "übernahm das Steuer, weil der Kapitän seekrank war",
+    "wollte seine Brüder beeindrucken",
+    "wollte einfach einmal Kapitän sein"
+   ]
+  },
+  "fr": {
+   "q": "Captain Martin …",
+   "o": [
+    "prenait des cours de voile",
+    "a pris la barre car le capitaine avait le mal de mer",
+    "voulait impressionner ses frères",
+    "voulait simplement être capitaine, ne serait-ce qu'une fois"
+   ]
+  },
+  "en": {
+   "q": "Captain Martin …",
+   "o": [
+    "was taking sailing lessons",
+    "took the helm because the captain got seasick",
+    "wanted to impress his brothers",
+    "simply wanted to be captain, just once"
+   ]
+  }
+ },
+ {
+  "id": "gameboy",
+  "img": "gameboy",
+  "reveal": "gameboy2",
+  "correct": 2,
+  "sure": true,
+  "de": {
+   "q": "Sommerferien 1991: Rund 36 AA-Batterien gingen für Super Mario auf dem Game Boy drauf – und zwar in …",
+   "o": [
+    "Italien",
+    "Israel",
+    "Griechenland",
+    "Ägypten"
+   ]
+  },
+  "fr": {
+   "q": "Été 1991 : environ 36 piles AA ont été sacrifiées pour Super Mario sur la Game Boy – c'était en …",
+   "o": [
+    "Italie",
+    "Israël",
+    "Grèce",
+    "Égypte"
+   ]
+  },
+  "en": {
+   "q": "During the summer holidays of '91, roughly 36 AA batteries were used playing Super Mario on a Game Boy – this was in …",
+   "o": [
+    "Italy",
+    "Israel",
+    "Greece",
+    "Egypt"
+   ]
+  }
+ },
+ {
+  "id": "photobomb",
+  "img": "photobomb",
+  "correct": 1,
+  "sure": true,
+  "de": {
+   "q": "Der Photobomber im Hintergrund ist …",
+   "o": [
+    "ein zufälliger Wanderer",
+    "Martins Vater",
+    "ein erzürnter Förster",
+    "der Yeti"
+   ]
+  },
+  "fr": {
+   "q": "Le photobomb en arrière-plan, c'est …",
+   "o": [
+    "un randonneur lambda",
+    "le père de Martin",
+    "un garde forestier en colère",
+    "le yéti"
+   ]
+  },
+  "en": {
+   "q": "The photobomber in the background is …",
+   "o": [
+    "a random hiker",
+    "Martin's dad",
+    "an angry forest ranger",
+    "the Yeti"
+   ]
+  }
+ },
+ {
+  "id": "neighbor",
+  "img": "neighbor",
+  "correct": 2,
+  "sure": true,
+  "de": {
+   "q": "Martins Nachbarsjunge – bei ihm liefen Horror- und «andere» Filme – hiess:",
+   "o": [
+    "Lukas",
+    "Sidney",
+    "Frank",
+    "Dave"
+   ]
+  },
+  "fr": {
+   "q": "Le voisin de Martin – chez qui on regardait des films d'horreur et « autres » films – s'appelait :",
+   "o": [
+    "Lukas",
+    "Sidney",
+    "Frank",
+    "Dave"
+   ]
+  },
+  "en": {
+   "q": "Martin's next-door neighbor (where he could watch horror and \"other\" movies) was called …",
+   "o": [
+    "Lukas",
+    "Sidney",
+    "Frank",
+    "Dave"
+   ]
+  }
+ },
+ {
+  "id": "conf1998",
+  "img": "conf1998",
+  "correct": 3,
+  "sure": true,
+  "de": {
+   "q": "Was passiert in dieser Szene aus dem Jahr 1998?",
+   "o": [
+    "Der Pfarrer lädt die komplette Bibel direkt in Martins Gehirn",
+    "Martin wird konfirmiert",
+    "Martin wird getauft",
+    "Martin wird getauft und konfirmiert in einem (er mag Effizienz)"
+   ]
+  },
+  "fr": {
+   "q": "Que se passe-t-il dans cette scène de 1998 ?",
+   "o": [
+    "Le pasteur télécharge la Bible entière directement dans le cerveau de Martin",
+    "Martin fait sa confirmation",
+    "Martin se fait baptiser",
+    "Martin se fait baptiser et confirmer en une fois (il aime l'efficacité)"
+   ]
+  },
+  "en": {
+   "q": "What is taking place in this scene from 1998?",
+   "o": [
+    "The pastor is downloading the entire bible directly into Martin's brain",
+    "Martin is getting confirmed",
+    "Martin is getting baptized",
+    "Martin is getting baptized and confirmed at once (he likes efficiency)"
+   ]
+  }
+ },
+ {
+  "id": "cruise",
+  "img": "cruise",
+  "correct": 1,
+  "sure": true,
+  "de": {
+   "q": "Man sagt, Martin sehe aus wie …",
+   "o": [
+    "Tom Hanks",
+    "Tom Cruise",
+    "Tom Ford",
+    "Jerry Maguire"
+   ]
+  },
+  "fr": {
+   "q": "On dit que Martin ressemble à …",
+   "o": [
+    "Tom Hanks",
+    "Tom Cruise",
+    "Tom Ford",
+    "Jerry Maguire"
+   ]
+  },
+  "en": {
+   "q": "Martin is said to resemble …",
+   "o": [
+    "Tom Hanks",
+    "Tom Cruise",
+    "Tom Ford",
+    "Jerry Maguire"
+   ]
+  }
+ },
+ {
+  "id": "badtaste",
+  "img": "badtaste",
+  "correct": 2,
+  "sure": true,
+  "de": {
+   "q": "Anlass und Jahr?",
+   "o": [
+    "Daft-Punk-Konzert 2015",
+    "1. Schultag FHNW 2001",
+    "Badtaste-Party 2010",
+    "Fasnacht 2025"
+   ]
+  },
+  "fr": {
+   "q": "L'occasion et l'année ?",
+   "o": [
+    "Concert de Daft Punk 2015",
+    "Premier jour à la FHNW 2001",
+    "Soirée Badtaste 2010",
+    "Carnaval 2025"
+   ]
+  },
+  "en": {
+   "q": "The occasion and the year?",
+   "o": [
+    "Daft Punk concert 2015",
+    "First day at FHNW 2001",
+    "Bad-taste party 2010",
+    "Carnival 2025"
+   ]
+  }
+ },
+ {
+  "id": "ski",
+  "img": "ski",
+  "correct": 0,
+  "sure": true,
+  "de": {
+   "q": "Über 20 Jahre lang ging es zum Skifahren immer an denselben Ort. Wohin?",
+   "o": [
+    "Grindelwald",
+    "Chamonix",
+    "St. Moritz",
+    "Cortina"
+   ]
+  },
+  "fr": {
+   "q": "Pendant plus de 20 ans, le ski, c'était toujours au même endroit. Où ?",
+   "o": [
+    "Grindelwald",
+    "Chamonix",
+    "Saint-Moritz",
+    "Cortina"
+   ]
+  },
+  "en": {
+   "q": "For over 20 years, the ski trip went to the very same place. Where?",
+   "o": [
+    "Grindelwald",
+    "Chamonix",
+    "St. Moritz",
+    "Cortina"
+   ]
+  }
+ },
+ {
+  "id": "hotel",
+  "img": "hotel",
+  "correct": 3,
+  "sure": true,
+  "de": {
+   "q": "Name und Ort des «Hotels»?",
+   "o": [
+    "Hotel Kempinski, St. Moritz",
+    "Hotel Les Trois Rois, Basel",
+    "Jugendherberge, Biel",
+    "Naturfreundehaus, Grindelwald"
+   ]
+  },
+  "fr": {
+   "q": "Le nom et le lieu de l'« hôtel » ?",
+   "o": [
+    "Hôtel Kempinski, Saint-Moritz",
+    "Hôtel Les Trois Rois, Bâle",
+    "Auberge de jeunesse, Bienne",
+    "Maison des Amis de la Nature, Grindelwald"
+   ]
+  },
+  "en": {
+   "q": "Name and location of the \"hotel\"?",
+   "o": [
+    "Hotel Kempinski, St. Moritz",
+    "Hotel Les Trois Rois, Basel",
+    "Youth hostel, Biel",
+    "Naturfreunde hut, Grindelwald"
+   ]
+  }
+ },
+ {
+  "id": "game",
+  "img": "game",
+  "correct": 0,
+  "sure": true,
+  "de": {
+   "q": "Wie hiess das Spiel – und wer verlor an diesem Abend?",
+   "o": [
+    "Meiere – Mech",
+    "Hau den Lukas – Lukas",
+    "Müllere – Zigi",
+    "Finde den Bieber – Martin"
+   ]
+  },
+  "fr": {
+   "q": "Le nom du jeu – et le perdant de la soirée ?",
+   "o": [
+    "Meiere – Mech",
+    "Hau den Lukas – Lukas",
+    "Müllere – Zigi",
+    "Trouve le Bieber – Martin"
+   ]
+  },
+  "en": {
+   "q": "Name of the game – and the loser that night?",
+   "o": [
+    "Meiere – Mech",
+    "Hau den Lukas – Lukas",
+    "Müllere – Zigi",
+    "Find the Bieber – Martin"
+   ]
+  }
+ },
+ {
+  "id": "surfdest",
+  "img": "surfdest",
+  "correct": 1,
+  "sure": true,
+  "de": {
+   "q": "Surfferien waren ein Muss – so auch 2003. Wohin ging es meistens?",
+   "o": [
+    "Bali (Indonesien)",
+    "Biarritz (Frankreich)",
+    "Nazaré (Portugal)",
+    "Genf (Schweiz)"
+   ]
+  },
+  "fr": {
+   "q": "Les vacances surf, c'était sacré – comme en 2003. La destination habituelle ?",
+   "o": [
+    "Bali (Indonésie)",
+    "Biarritz (France)",
+    "Nazaré (Portugal)",
+    "Genève (Suisse)"
+   ]
+  },
+  "en": {
+   "q": "Surf holidays were a must – 2003 included. Where did the crew usually go?",
+   "o": [
+    "Bali (Indonesia)",
+    "Biarritz (France)",
+    "Nazaré (Portugal)",
+    "Geneva (Switzerland)"
+   ]
+  }
+ },
+ {
+  "id": "wipe",
+  "img": "wipe1",
+  "reveal": "wipe2",
+  "correct": 1,
+  "sure": true,
+  "de": {
+   "q": "Und dann? Martin …",
+   "o": [
+    "surfte die Welle bis an den Strand",
+    "wurde von der Welle erfasst",
+    "blieb einfach auf dem Brett knien",
+    "prallte gegen einen Felsen und zerbrach das Brett in zwei Teile"
+   ]
+  },
+  "fr": {
+   "q": "Et ensuite ? Martin …",
+   "o": [
+    "a surfé la vague jusqu'au rivage",
+    "a été emporté par la vague",
+    "est resté à genoux sur sa planche",
+    "a heurté un rocher et cassé sa planche en deux"
+   ]
+  },
+  "en": {
+   "q": "And then? Martin …",
+   "o": [
+    "rode the wave all the way to the beach",
+    "got wiped out by the wave",
+    "just stayed kneeling on his board",
+    "hit a rock and snapped his board in two"
+   ]
+  }
+ },
+ {
+  "id": "pee",
+  "img": "pee",
+  "correct": 2,
+  "sure": true,
+  "de": {
+   "q": "Martin wäre fast verhaftet worden – fürs Pinkeln an …",
+   "o": [
+    "das Kolosseum in Rom",
+    "die Felsenstadt Petra",
+    "die Pyramiden von Gizeh",
+    "die Akropolis in Athen"
+   ]
+  },
+  "fr": {
+   "q": "Martin a failli se faire arrêter pour avoir fait pipi contre …",
+   "o": [
+    "le Colisée à Rome",
+    "la cité antique de Pétra",
+    "les pyramides de Gizeh",
+    "l'Acropole d'Athènes"
+   ]
+  },
+  "en": {
+   "q": "Martin almost got arrested for peeing against the …",
+   "o": [
+    "Colosseum in Rome",
+    "ancient city of Petra",
+    "Pyramids of Giza",
+    "Acropolis of Athens"
+   ]
+  }
+ },
+ {
+  "id": "phone",
+  "img": "phone",
+  "correct": 0,
+  "sure": true,
+  "de": {
+   "q": "Welches Handy war das letzte, das noch in Raphis Maul passte?",
+   "o": [
+    "Sony Ericsson W880i",
+    "Nokia 3210",
+    "iPhone 3",
+    "Nokia Communicator"
+   ]
+  },
+  "fr": {
+   "q": "Quel a été le dernier portable à encore tenir dans la bouche de Raphi ?",
+   "o": [
+    "Sony Ericsson W880i",
+    "Nokia 3210",
+    "iPhone 3",
+    "Nokia Communicator"
+   ]
+  },
+  "en": {
+   "q": "Which phone was the last one that still fit into Raphi's mouth?",
+   "o": [
+    "Sony Ericsson W880i",
+    "Nokia 3210",
+    "iPhone 3",
+    "Nokia Communicator"
+   ]
+  }
+ },
+ {
+  "id": "wood",
+  "img": "wood",
+  "correct": 2,
+  "sure": true,
+  "de": {
+   "q": "Warum schleppt der Nötzli so viel Holz – und wohin damit?",
+   "o": [
+    "Kunstprojekt, Basel",
+    "Biberdamm, Birs",
+    "Feuerholz, Isenfluh",
+    "Floss bauen, Zürichsee"
+   ]
+  },
+  "fr": {
+   "q": "Pourquoi Nötzli trimballe-t-il autant de bois – et pour aller où ?",
+   "o": [
+    "Projet artistique, Bâle",
+    "Barrage de castor, Birse",
+    "Bois de feu, Isenfluh",
+    "Construire un radeau, lac de Zurich"
+   ]
+  },
+  "en": {
+   "q": "Why is Nötzli hauling all that wood – and where is he taking it?",
+   "o": [
+    "Art project, Basel",
+    "Beaver dam, river Birs",
+    "Firewood, Isenfluh",
+    "Raft building, Lake Zurich"
+   ]
+  }
+ },
+ {
+  "id": "gondola",
+  "img": "gondola",
+  "correct": 2,
+  "sure": true,
+  "de": {
+   "q": "WTF ist das – und wo?",
+   "o": [
+    "SpaceX-Prototyp, Austin TX",
+    "Amphibien-U-Boot, Genf",
+    "Materialgondel, Seewli",
+    "Achterbahn, Europa-Park"
+   ]
+  },
+  "fr": {
+   "q": "WTF, c'est quoi – et où ?",
+   "o": [
+    "Prototype SpaceX, Austin TX",
+    "Sous-marin amphibie, Genève",
+    "Benne à matériel, Seewli",
+    "Montagnes russes, Europa-Park"
+   ]
+  },
+  "en": {
+   "q": "WTF is this – and where?",
+   "o": [
+    "SpaceX prototype, Austin TX",
+    "Amphibious submarine, Geneva",
+    "Cargo cable car, Seewli",
+    "Roller coaster, Europa-Park"
+   ]
+  }
+ },
+ {
+  "id": "donkey",
+  "img": "donkey",
+  "correct": 0,
+  "sure": true,
+  "de": {
+   "q": "Was ist hier los mit dem Esel?",
+   "o": [
+    "Er folgte Martin den ganzen Tag auf der Velotour",
+    "Martin hat ihn mit dem Velo angefahren",
+    "Er freute sich riesig über das Selfie mit Martin",
+    "Martin machte gerade Pause bei einem Eselritt"
+   ]
+  },
+  "fr": {
+   "q": "Que se passe-t-il avec cet âne ?",
+   "o": [
+    "Il a suivi Martin toute la journée à vélo",
+    "Martin l'a percuté avec son vélo",
+    "Il a adoré prendre un selfie avec Martin",
+    "Martin faisait une pause pendant sa balade à dos d'âne"
+   ]
+  },
+  "en": {
+   "q": "What's going on with this donkey?",
+   "o": [
+    "It followed Martin on his bike ride all day",
+    "Martin ran into it with his bike",
+    "It absolutely loved taking a selfie with Martin",
+    "Martin was taking a break from his donkey ride"
+   ]
+  }
+ },
+ {
+  "id": "digger",
+  "img": "digger",
+  "correct": 1,
+  "sure": true,
+  "de": {
+   "q": "Warum schüttete der Bagger extra einen Kieshügel für Martin auf?",
+   "o": [
+    "Als Ersatz für seinen Biberdamm",
+    "Damit er wegfährt",
+    "Nöggiglück",
+    "Martin hat den Hügel selber aufgeschüttet"
+   ]
+  },
+  "fr": {
+   "q": "Pourquoi la pelleteuse a-t-elle monté un tas de gravier exprès pour Martin ?",
+   "o": [
+    "Pour remplacer son barrage de castor",
+    "Pour qu'il s'en aille",
+    "La chance à la Nöggi",
+    "C'est Martin qui a fait le tas lui-même"
+   ]
+  },
+  "en": {
+   "q": "Why did the digger pile up a gravel hill just for Martin?",
+   "o": [
+    "To replace his beaver dam",
+    "To make him go away",
+    "Nöggi luck",
+    "Martin piled it up himself"
+   ]
+  }
+ },
+ {
+  "id": "tree",
+  "img": "tree",
+  "correct": 3,
+  "sure": true,
+  "de": {
+   "q": "Warum hat Martin diesen «Weihnachtsbaum» so schön dekoriert?",
+   "o": [
+    "Er war mal Samichlaus und kann das deshalb",
+    "Er ist Designer und kann das deshalb nicht",
+    "Er präsentiert ihn nur – dekoriert hat ihn sein Bruder",
+    "Es ist gar kein Weihnachtsbaum"
+   ]
+  },
+  "fr": {
+   "q": "Pourquoi Martin a-t-il si bien décoré ce « sapin de Noël » ?",
+   "o": [
+    "Il a déjà fait le Père Noël, donc il sait faire",
+    "Il est designer, donc justement il ne sait pas",
+    "Il ne fait que le présenter – c'est son frère qui l'a décoré",
+    "Ce n'est pas du tout un sapin de Noël"
+   ]
+  },
+  "en": {
+   "q": "Why did Martin decorate this \"Christmas tree\" so beautifully?",
+   "o": [
+    "He once played Santa, so he's got the skills",
+    "He's a designer, so he definitely doesn't",
+    "He's just presenting it – his brother decorated it",
+    "It's not a Christmas tree at all"
+   ]
+  }
+ },
+ {
+  "id": "onlime",
+  "img": "onlime",
+  "correct": 1,
+  "sure": true,
+  "de": {
+   "q": "Was ist Martin auf diesem Bild?",
+   "o": [
+    "online",
+    "on lime",
+    "on time",
+    "komplett in ON-Kleidern"
+   ]
+  },
+  "fr": {
+   "q": "Sur cette photo, Martin est …",
+   "o": [
+    "online",
+    "on lime",
+    "on time",
+    "entièrement habillé en ON"
+   ]
+  },
+  "en": {
+   "q": "In this picture, Martin is …",
+   "o": [
+    "online",
+    "on lime",
+    "on time",
+    "fully decked out in ON gear"
+   ]
+  }
+ },
+ {
+  "id": "mitch",
+  "img": "mitch",
+  "correct": 0,
+  "sure": true,
+  "de": {
+   "q": "Mit wem wird Martin häufig verwechselt?",
+   "o": [
+    "Mitch Buchannon",
+    "Adonis",
+    "Herkules",
+    "Reinhold Messner"
+   ]
+  },
+  "fr": {
+   "q": "Avec qui confond-on souvent Martin ?",
+   "o": [
+    "Mitch Buchannon",
+    "Adonis",
+    "Hercule",
+    "Reinhold Messner"
+   ]
+  },
+  "en": {
+   "q": "Who does Martin constantly get mistaken for?",
+   "o": [
+    "Mitch Buchannon",
+    "Adonis",
+    "Hercules",
+    "Reinhold Messner"
+   ]
+  }
+ }
+]
