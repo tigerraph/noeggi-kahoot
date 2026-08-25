@@ -254,6 +254,11 @@ body.retro .reclist{box-shadow:0 0 12px rgba(45,226,230,.2);}
 .lightbox img{max-height:68vh; width:auto; max-width:100%; object-fit:contain;}
 .lcap{color:var(--cream); font-weight:800; text-align:center; max-width:34ch; margin:0;}
 .lhint{color:var(--cream-dim); font-size:1.2rem; margin:0;}
+.plink{display:flex; gap:10px; align-items:center; justify-content:space-between; width:min(92%,340px);
+  background:rgba(255,255,255,.06); border-radius:12px; padding:8px 8px 8px 14px; font-size:.78rem; color:var(--cream-dim); text-align:left;}
+.plink span{flex:1; min-width:0; overflow-wrap:anywhere;}
+.hello{color:var(--cream); font-weight:800; margin:0;}
+.notyou{background:none; border:none; color:var(--cream-dim); text-decoration:underline; font:inherit; font-size:.75rem; cursor:pointer; padding:0 2px;}
 </style>
 </head>
 <body>
@@ -307,7 +312,7 @@ const I18N = {
   galleryTitle:"Bonus-Galerie", unlockHint:"Je 3 Richtige in Serie schalten ein Bonus-Foto frei.",
   bonusCaps:["Chica nochmals – sie hat es verdient.","Der Captain, ganz nah.","Sommer 1991: Krabbenjagd statt Game Boy.","Aus Heftis Archiv.","Das Beweisfoto zum Sony Ericsson.","Frisch aus Franks Archiv.","Fast on lime: das Agaven-Selfie."],
   startBlitz:"Blitz · 10 Fragen à 10 Sek.", best:"Rekord", namePh:"Dein Name",
-  save:"Score speichern", saved:"Gespeichert ✓", recTitle:"Bestenliste", filtAll:"Alle"
+  save:"Score speichern", saved:"Gespeichert ✓", recTitle:"Bestenliste", filtAll:"Alle", linkLbl:"Dein Link – Name & Galerie auf jedem Gerät", share:"Teilen", copied:"Kopiert ✓", wb:"Willkommen zurück", notYou:"nicht du?"
  },
  fr:{
   kicker:"Chloé & Nöggi", title:'Le <span class="amp">Kahoot</span> du mariage',
@@ -327,7 +332,7 @@ const I18N = {
   galleryTitle:"Galerie bonus", unlockHint:"Chaque série de 3 bonnes réponses débloque une photo bonus.",
   bonusCaps:["Encore Chica – elle le mérite.","Le capitaine, de près.","Été 1991\u00a0: chasse aux crabes.","Des archives de Hefti.","La preuve pour le Sony Ericsson.","Tout droit des archives de Frank.","Presque on lime\u00a0: le selfie à l'agave."],
   startBlitz:"Éclair · 10 questions à 10 s", best:"Record", namePh:"Ton nom",
-  save:"Enregistrer", saved:"Enregistré ✓", recTitle:"Meilleurs scores", filtAll:"Tous"
+  save:"Enregistrer", saved:"Enregistré ✓", recTitle:"Meilleurs scores", filtAll:"Tous", linkLbl:"Ton lien – nom & galerie sur chaque appareil", share:"Partager", copied:"Copié ✓", wb:"Content de te revoir", notYou:"pas toi\u00a0?"
  },
  en:{
   kicker:"Chloé & Nöggi", title:'The Wedding <span class="amp">Kahoot</span>',
@@ -347,7 +352,7 @@ const I18N = {
   galleryTitle:"Bonus gallery", unlockHint:"Every 3 correct in a row unlocks a bonus photo.",
   bonusCaps:["Chica again – she earned it.","The captain, up close.","Summer '91: crab hunting.","From Hefti's archive.","The Sony Ericsson evidence.","Straight from Frank's archive.","Almost on lime: the agave selfie."],
   startBlitz:"Lightning · 10 questions · 10 s", best:"Best", namePh:"Your name",
-  save:"Save score", saved:"Saved ✓", recTitle:"High scores", filtAll:"All"
+  save:"Save score", saved:"Saved ✓", recTitle:"High scores", filtAll:"All", linkLbl:"Your link – name & gallery on any device", share:"Share", copied:"Copied ✓", wb:"Welcome back", notYou:"not you?"
  }
 };
 
@@ -361,6 +366,7 @@ let pendingBonusKey = null, lastBonusKey = null, endFx = false, savedThisGame = 
 let collected = store.get("bonus", []);
 let records = store.get("records", []);
 let lastName = store.get("name", "");
+let playerToken = store.get("ptoken", "");
 let retroOn = store.get("retro", false);
 let soundOn = store.get("sound", true);
 if(retroOn) document.body.classList.add("retro");
@@ -403,11 +409,12 @@ function renderStart(){
     <div class="kicker">${t().kicker}</div>
     <h1 class="title">${t().title}</h1>
     <p class="sub">${t().sub}</p>
+    ${lastName? `<p class="hello">👋 ${t().wb}, ${esc(lastName)}! <button class="notyou" id="notyou">${t().notYou}</button></p>` : ""}
     <button class="btn" id="startbtn">${t().start10}</button>
     <button class="btn alt" id="startall">${t().startAll}</button>
     <button class="btn alt" id="startblitz">${t().startBlitz}</button>
     <p class="rules">${t().rules}</p>
-    <p class="buildtag">Build 25.08. · 12:14</p>
+    <p class="buildtag">Build 25.08. · 12:26</p>
     <p class="rules best" id="bestline" style="${records.length?"":"display:none"}">${records.length? `🏆 ${t().best}: ${records[0].score} · ${esc(records[0].name)} 📱` : ""}</p>
   </div>`;
   app.querySelectorAll("[data-lang]").forEach(b=>b.onclick=()=>setLang(b.dataset.lang));
@@ -415,6 +422,12 @@ function renderStart(){
   document.getElementById("startbtn").onclick = ()=>startGame(10);
   document.getElementById("startall").onclick = ()=>startGame();
   document.getElementById("startblitz").onclick = ()=>startGame(10, 10000);
+  const ny=document.getElementById("notyou");
+  if(ny) ny.onclick=()=>{
+    playerToken=""; lastName=""; collected=[];
+    store.set("ptoken",""); store.set("name",""); store.set("bonus",[]);
+    renderStart();
+  };
   refreshBoard();
 }
 
@@ -545,7 +558,7 @@ function next(){
   A.tap();
   if(pendingBonusKey){
     const k = pendingBonusKey; pendingBonusKey = null;
-    if(!collected.includes(k)){ collected.push(k); store.set("bonus", collected); }
+    if(!collected.includes(k)){ collected.push(k); store.set("bonus", collected); playerSync(true); }
     renderBonus(false, k); return;
   }
   advance();
@@ -590,6 +603,7 @@ function renderEnd(){
       <input id="pname" maxlength="14" placeholder="${t().namePh}" value="${esc(lastName)}">
       <button class="btn small" id="savebtn">${t().save}</button>
     </div>
+    ${playerToken? `<div class="plink"><span>🔗 ${t().linkLbl}</span><button class="btn small" id="sharebtn">${t().share}</button></div>` : ""}
     <div class="chips" id="chips">${chipsHtml()}</div>
     <div class="reclist" id="reclist">${recListHtml()}</div>
     <div class="kicker" style="font-size:.68rem; letter-spacing:.18em">${t().galleryTitle} · ${collected.length}/${BONUS.length}</div>
@@ -606,6 +620,15 @@ function renderEnd(){
   app.querySelectorAll("[data-lang]").forEach(b=>b.onclick=()=>setLang(b.dataset.lang));
   bindCtl();
   bindChips();
+  const shb=document.getElementById("sharebtn");
+  if(shb) shb.onclick = async ()=>{
+    const url = personalLink();
+    try{ await navigator.share({ title:"Nöggi-Kahoot", url }); }
+    catch(e){
+      try{ await navigator.clipboard.writeText(url); shb.textContent=t().copied; }
+      catch(e2){ shb.previousElementSibling.textContent = url; }
+    }
+  };
   app.querySelectorAll(".gal .polaroid[data-k]").forEach(el=>el.onclick=()=>openLight(el.dataset.k));
   const sb2=document.getElementById("savebtn");
   if(savedThisGame){ sb2.textContent=t().saved; sb2.disabled=true; document.getElementById("pname").disabled=true; }
@@ -791,6 +814,39 @@ async function cloudSave(rec){
     });
   }catch(e){}
 }
+function newToken(){
+  try{ return crypto.randomUUID(); }
+  catch(e){ return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,c=>{
+    const r=Math.random()*16|0; return (c==="x"?r:(r&3|8)).toString(16); }); }
+}
+async function rpc(fn, body){
+  if(!SUPA_URL) return null;
+  try{
+    const r = await fetch(SUPA_URL+"/rest/v1/rpc/"+fn, {
+      method:"POST",
+      headers:{ apikey:SUPA_KEY, Authorization:"Bearer "+SUPA_KEY, "Content-Type":"application/json" },
+      body: JSON.stringify(body)
+    });
+    if(!r.ok) return null;
+    const txt = await r.text();
+    return txt ? JSON.parse(txt) : true;
+  }catch(e){ return null; }
+}
+async function playerSync(push){
+  if(!playerToken) return;
+  if(push){ rpc("player_upsert",{tok:playerToken,pname:lastName||"???",pcollected:collected,pfp:FP}); return; }
+  const rows = await rpc("player_get",{tok:playerToken});
+  if(rows && rows.length){
+    const srv = rows[0];
+    if(srv.name){ lastName = srv.name; store.set("name", lastName); }
+    const merged = new Set([...(srv.collected||[]), ...collected]);
+    collected = BONUS.filter(k=>merged.has(k));
+    store.set("bonus", collected);
+    rpc("player_upsert",{tok:playerToken,pname:lastName||"???",pcollected:collected,pfp:FP});
+    if(phase==="end") renderEnd();
+  }
+}
+function personalLink(){ return location.origin+location.pathname+"#p="+playerToken; }
 async function refreshBoard(){
   const rows = await cloudTop();
   if(!rows || !rows.length) return;
@@ -803,6 +859,21 @@ async function refreshBoard(){
     bl.style.display = "";
   }
 }
+async function finishSave(name){
+  if(!playerToken){
+    const rows = await rpc("player_by_name",{pname:name});
+    if(rows && rows.length===1 && rows[0].token){
+      playerToken = rows[0].token;
+      const merged = new Set([...(rows[0].collected||[]), ...collected]);
+      collected = BONUS.filter(k=>merged.has(k));
+      store.set("bonus", collected);
+    } else {
+      playerToken = newToken();
+    }
+    store.set("ptoken", playerToken);
+  }
+  playerSync(true);
+}
 function saveRecord(){
   if(savedThisGame) return;
   const inp=document.getElementById("pname");
@@ -813,6 +884,7 @@ function saveRecord(){
   records=records.slice(0,50);
   store.set("records", records);
   savedThisGame=true;
+  finishSave(name);
   cloudSave({name, score, correct:correctCount, len:round.length, mode:gameMode}).then(refreshBoard);
   A.tap();
   const b=document.getElementById("savebtn");
@@ -862,6 +934,53 @@ document.addEventListener("keydown",(e)=>{
   }
 });
 
+function computeFp(){
+  try{
+    const c=document.createElement("canvas"); c.width=280; c.height=60;
+    const x=c.getContext("2d");
+    x.textBaseline="alphabetic"; x.fillStyle="#f60"; x.fillRect(60,4,120,28);
+    x.fillStyle="#069"; x.font="15px Arial"; x.fillText("Nöggi-Kahoot 🥨🚲 fjord",2,20);
+    x.fillStyle="rgba(102,204,0,.7)"; x.font="17px 'Times New Roman'"; x.fillText("Nöggi-Kahoot 🥨🚲 fjord",4,42);
+    const g=x.createLinearGradient(0,0,280,0); g.addColorStop(0,"#a00"); g.addColorStop(1,"#00a");
+    x.strokeStyle=g; x.lineWidth=2.5; x.beginPath(); x.arc(140,30,24,0.3,5.9); x.stroke();
+    let s=c.toDataURL();
+    const cv=document.createElement("canvas");
+    const glx=cv.getContext("webgl")||cv.getContext("experimental-webgl");
+    if(glx){
+      const dbg=glx.getExtension("WEBGL_debug_renderer_info");
+      s+="|"+(dbg? glx.getParameter(dbg.UNMASKED_VENDOR_WEBGL)+"/"+glx.getParameter(dbg.UNMASKED_RENDERER_WEBGL)
+               : glx.getParameter(glx.VENDOR)+"/"+glx.getParameter(glx.RENDERER));
+    }
+    s+="|"+screen.width+"x"+screen.height+"x"+(window.devicePixelRatio||1)
+      +"|"+(navigator.hardwareConcurrency||"")+"|"+(navigator.maxTouchPoints||"")
+      +"|"+(navigator.language||"")+"|"+((Intl.DateTimeFormat().resolvedOptions().timeZone)||"");
+    let h=2166136261>>>0;
+    for(let i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h,16777619)>>>0; }
+    let h2=5381>>>0;
+    for(let i=s.length-1;i>=0;i--){ h2=(Math.imul(h2,33)^s.charCodeAt(i))>>>0; }
+    return h.toString(16)+h2.toString(16);
+  }catch(e){ return ""; }
+}
+const FP = computeFp();
+function adoptHash(){
+  const m = (location.hash||"").match(/p=([0-9a-fA-F-]{16,})/);
+  if(m && m[1]!==playerToken){ playerToken = m[1]; store.set("ptoken", playerToken); playerSync(false); }
+}
+async function identify(){
+  adoptHash();
+  const t0 = playerToken, n0 = lastName;
+  if(!playerToken && FP){
+    const rows = await rpc("player_by_fp",{pfp:FP});
+    if(rows && rows.length===1 && rows[0].token){
+      playerToken = rows[0].token;
+      store.set("ptoken", playerToken);
+    }
+  }
+  await playerSync(false);
+  if(phase==="start" && (playerToken!==t0 || lastName!==n0)) renderStart();
+}
+identify();
+window.addEventListener("hashchange", ()=>{ adoptHash(); });
 window.addEventListener("pointerdown", ()=>{ A.ensure(); A.unlock(); }, {passive:true});
 window.addEventListener("touchend", ()=>{ A.unlock(); }, {passive:true});
 renderStart();
