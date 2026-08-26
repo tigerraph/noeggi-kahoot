@@ -3,7 +3,7 @@
 const puppeteer = require("puppeteer");
 const path = require("path");
 const sleep = ms => new Promise(r => setTimeout(r, ms));
-const MODES = ["23", "10", "⚡10"];
+const MODES = ["23", "10", "⚡10", "👾10"];   // keep in sync with scores_mode_check
 const WRITE = ["POST", "PUT", "PATCH", "DELETE"];
 (async () => {
   const b = await puppeteer.launch({ headless: "new" });
