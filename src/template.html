@@ -255,6 +255,78 @@ body.retro .reclist{box-shadow:0 0 12px rgba(45,226,230,.2);}
 .plink span{flex:1; min-width:0; overflow-wrap:anywhere;}
 .hello{color:var(--cream); font-weight:800; margin:0;}
 .notyou{background:none; border:none; color:var(--cream-dim); text-decoration:underline; font:inherit; font-size:.75rem; cursor:pointer; padding:0 2px;}
+
+/* ---------- dispute row (reveal screen) ---------- */
+.fbrow{display:flex; gap:8px; align-items:center; justify-content:center; flex-wrap:wrap; min-height:34px;}
+.fblink{background:none; border:none; color:var(--cream-dim); font:inherit; font-size:.78rem; font-weight:800;
+  text-decoration:underline; text-underline-offset:3px; cursor:pointer; padding:4px 8px; opacity:.75;}
+.fblink:hover{opacity:1;}
+.fbrow input{flex:1 1 160px; max-width:260px; min-width:0; font:inherit; font-size:.85rem; font-weight:800;
+  color:var(--ink); background:var(--cream); border:none; border-radius:10px; padding:9px 12px;}
+.fbmsg{font-size:.78rem; font-weight:800; color:var(--gold); text-align:center;}
+.bpt{color:var(--gold); font-size:.78rem;}
+.lockhint{font-size:.75rem; opacity:.6; margin:0;}
+.arcnote{font-size:.72rem; opacity:.7; margin:-10px 0 0;}
+.btn.arc{background:var(--cream); color:var(--ink); box-shadow:0 4px 0 rgba(0,0,0,.35);}
+
+/* ---------- arcade mode (unlocked by the full bonus gallery) ---------- */
+body.arcade{
+  --bg0:#5b5fe0; --bg1:#6a6ef0; --glow:#8f92ff;
+  --cream:#f6f7ff; --cream-dim:#dcdefb; --ink:#0f1236;
+  --gold:#ffd233; --gold-deep:#000; --gold-hi:#fff;
+  --tape:#000; --neon2:#ffd233;
+  --red:#e2564a; --blue:#9aa0e8; --yellow:#f0b429; --green:#4aa96c;
+  background:#6a6ef0; background-attachment:fixed;
+}
+body.arcade img{image-rendering:pixelated;}
+body.arcade .title, body.arcade .kicker, body.arcade .btitle, body.arcade .bigpts,
+body.arcade .tier, body.arcade .rectitle, body.arcade .qcount, body.arcade .scorechip,
+body.arcade .btn, body.arcade .pill, body.arcade .tile{
+  font-family:'Press Start 2P','Archivo Black',monospace; text-transform:uppercase;}
+body.arcade .title{font-size:clamp(.95rem,4.8vw,1.5rem); line-height:1.6; color:#fff; text-shadow:4px 4px 0 #000;}
+body.arcade .title .amp{color:var(--gold);}
+body.arcade .kicker{font-size:.6rem; letter-spacing:.18em; color:#fff;}
+body.arcade .sub, body.arcade .sub2, body.arcade .rules, body.arcade .qtext, body.arcade .banner small{
+  font-family:'Nunito',sans-serif; text-transform:none;}
+body.arcade .bigpts{font-size:clamp(1.6rem,8vw,2.4rem); color:var(--gold); text-shadow:4px 4px 0 #000;}
+body.arcade .tier{font-size:clamp(.85rem,4vw,1.15rem); line-height:1.6; color:#fff; text-shadow:3px 3px 0 #000;}
+body.arcade .btitle{font-size:clamp(.75rem,3.8vw,1rem); line-height:1.7; color:var(--gold); text-shadow:3px 3px 0 #000;}
+body.arcade .qcount, body.arcade .scorechip{font-size:.5rem; border-radius:0; border:2px solid #000; background:#fff; color:#000;}
+body.arcade .qtext{background:#fff; color:#000; border:3px solid #000; box-shadow:6px 6px 0 #000;
+  border-radius:0; padding:12px 14px; text-shadow:none;}
+body.arcade .tile{
+  font-size:.62rem; line-height:1.5; color:#000; border-radius:0;
+  border:3px solid #000; box-shadow:6px 6px 0 #000; text-shadow:none;}
+body.arcade .tile .shape{text-shadow:none;}
+body.arcade .t0{background:#e2564a;} body.arcade .t1{background:#9aa0e8;}
+body.arcade .t2{background:#f0b429;} body.arcade .t3{background:#4aa96c;}
+body.arcade .tile.win{background:#fff; box-shadow:6px 6px 0 #000, 0 0 0 3px var(--gold) inset;}
+body.arcade .tile.dim{opacity:.45; filter:none;}
+body.arcade .btn{
+  font-size:.62rem; line-height:1.6; color:#000; background:var(--gold);
+  border:3px solid #000; border-radius:0; box-shadow:6px 6px 0 #000; padding:14px 22px;}
+body.arcade .btn:active{transform:translate(3px,3px); box-shadow:3px 3px 0 #000;}
+body.arcade .btn.ghost{background:transparent; border:none; box-shadow:none; color:#fff;
+  font-family:'Nunito',sans-serif; text-transform:none;}
+body.arcade .pill{font-size:.5rem; border-radius:0; border:2px solid #000; background:#fff; color:#000;}
+body.arcade .pill.on{background:var(--gold);}
+body.arcade .iconbtn, body.arcade .langcycle{border-radius:0; border:2px solid #000; background:#fff; color:#000;}
+body.arcade .langcycle{font-family:'Press Start 2P',monospace; font-size:.5rem;}
+body.arcade .timer{height:14px; border-radius:0; border:3px solid #000; background:#fff; padding:0;}
+body.arcade .timer i{border-radius:0; background:var(--gold);}
+body.arcade .polaroid{border-radius:0; border:3px solid #000; box-shadow:8px 8px 0 #000; transform:none;}
+body.arcade .polaroid::before{display:none;}
+body.arcade .banner{border-radius:0; border:3px solid #000; box-shadow:6px 6px 0 #000; color:#000;}
+body.arcade .banner.good{background:#7fd6a0;} body.arcade .banner.bad{background:#f2938a;}
+body.arcade .banner small{color:#000;} body.arcade .banner .pts{color:#000;}
+body.arcade .reclist, body.arcade .chips .chip{
+  border-radius:0; border:3px solid #000; background:#0f1236; color:#fff; box-shadow:6px 6px 0 #000;}
+body.arcade .chips .chip{border-width:2px; box-shadow:3px 3px 0 #000; font-size:.7rem;}
+body.arcade .chips .chip.on{background:var(--gold); color:#000;}
+body.arcade .rectitle{font-size:.5rem; color:var(--gold);}
+body.arcade .gal .locked{border-radius:0; border:3px solid #000; background:#0f1236;}
+body.arcade .fbrow input, body.arcade #pname{border-radius:0; border:3px solid #000; background:#fff;}
+body.arcade .fblink, body.arcade .rules, body.arcade .buildtag{color:#fff; opacity:.85;}
 </style>
 </head>
 <body>
@@ -308,7 +380,11 @@ const I18N = {
   galleryTitle:"Bonus-Galerie", unlockHint:"Je 3 Richtige in Serie schalten ein Bonus-Foto frei.",
   bonusCaps:["Chica nochmals – sie hat es verdient.","Der Captain, ganz nah.","Sommer 1991: Krabbenjagd statt Game Boy.","Aus Heftis Archiv.","Das Beweisfoto zum Sony Ericsson.","Frisch aus Franks Archiv.","Fast on lime: das Agaven-Selfie."],
   startBlitz:"Blitz · 10 Fragen à 10 Sek.", best:"Rekord", namePh:"Dein Name",
-  save:"Score speichern", saved:"Gespeichert ✓", recTitle:"Bestenliste", filtAll:"Alle", linkLbl:"Dein Link – Name & Galerie auf jedem Gerät", share:"Teilen", copied:"Kopiert ✓", wb:"Willkommen zurück", notYou:"nicht du?"
+  save:"Score speichern", saved:"Gespeichert ✓", recTitle:"Bestenliste", filtAll:"Alle", linkLbl:"Dein Link – Name & Galerie auf jedem Gerät", share:"Teilen", copied:"Kopiert ✓", wb:"Willkommen zurück", notYou:"nicht du?",
+  startArcade:"👾 Arcade · 23 Fragen à 5 Sek.", arcadeLocked:"👾 Arcade-Modus: sammle alle 7 Bonusfotos.",
+  arcadeRules:"5 Sekunden pro Frage, es geht automatisch weiter.",
+  fbAsk:"Antwort falsch?", fbPh:"Was wäre richtig?", fbSend:"Melden",
+  fbThanks:"Danke! Stimmt es, gibt es 1000 Punkte.", fbFail:"Hat nicht geklappt – später nochmals."
  },
  fr:{
   kicker:"Chloé & Nöggi", title:'Le <span class="amp">Kahoot</span> du mariage',
@@ -328,7 +404,11 @@ const I18N = {
   galleryTitle:"Galerie bonus", unlockHint:"Chaque série de 3 bonnes réponses débloque une photo bonus.",
   bonusCaps:["Encore Chica – elle le mérite.","Le capitaine, de près.","Été 1991\u00a0: chasse aux crabes.","Des archives de Hefti.","La preuve pour le Sony Ericsson.","Tout droit des archives de Frank.","Presque on lime\u00a0: le selfie à l'agave."],
   startBlitz:"Éclair · 10 questions à 10 s", best:"Record", namePh:"Ton nom",
-  save:"Enregistrer", saved:"Enregistré ✓", recTitle:"Meilleurs scores", filtAll:"Tous", linkLbl:"Ton lien – nom & galerie sur chaque appareil", share:"Partager", copied:"Copié ✓", wb:"Content de te revoir", notYou:"pas toi\u00a0?"
+  save:"Enregistrer", saved:"Enregistré ✓", recTitle:"Meilleurs scores", filtAll:"Tous", linkLbl:"Ton lien – nom & galerie sur chaque appareil", share:"Partager", copied:"Copié ✓", wb:"Content de te revoir", notYou:"pas toi\u00a0?",
+  startArcade:"👾 Arcade · 23 questions à 5 s", arcadeLocked:"👾 Mode arcade\u00a0: collectionne les 7 photos bonus.",
+  arcadeRules:"5 secondes par question, ça enchaîne tout seul.",
+  fbAsk:"Réponse fausse\u00a0?", fbPh:"Quelle serait la bonne\u00a0?", fbSend:"Signaler",
+  fbThanks:"Merci\u00a0! Si c'est juste, 1000 points.", fbFail:"Échec – réessaie plus tard."
  },
  en:{
   kicker:"Chloé & Nöggi", title:'The Wedding <span class="amp">Kahoot</span>',
@@ -348,7 +428,11 @@ const I18N = {
   galleryTitle:"Bonus gallery", unlockHint:"Every 3 correct in a row unlocks a bonus photo.",
   bonusCaps:["Chica again – she earned it.","The captain, up close.","Summer '91: crab hunting.","From Hefti's archive.","The Sony Ericsson evidence.","Straight from Frank's archive.","Almost on lime: the agave selfie."],
   startBlitz:"Lightning · 10 questions · 10 s", best:"Best", namePh:"Your name",
-  save:"Save score", saved:"Saved ✓", recTitle:"High scores", filtAll:"All", linkLbl:"Your link – name & gallery on any device", share:"Share", copied:"Copied ✓", wb:"Welcome back", notYou:"not you?"
+  save:"Save score", saved:"Saved ✓", recTitle:"High scores", filtAll:"All", linkLbl:"Your link – name & gallery on any device", share:"Share", copied:"Copied ✓", wb:"Welcome back", notYou:"not you?",
+  startArcade:"👾 Arcade · 23 questions · 5 s", arcadeLocked:"👾 Arcade mode: collect all 7 bonus photos.",
+  arcadeRules:"5 seconds per question, it advances on its own.",
+  fbAsk:"Answer wrong?", fbPh:"What would be right?", fbSend:"Report",
+  fbThanks:"Thanks! If it checks out, 1000 points.", fbFail:"Failed – try again later."
  }
 };
 
@@ -359,6 +443,7 @@ let order = [];                // per-question shuffled option index arrays
 let deadline = 0, rafId = 0;
 let picked = -1, lastGain = 0, lastBonus = 0, timedOut = false, lastSec = 99;
 let pendingBonusKey = null, lastBonusKey = null, endFx = false, savedThisGame = false, gameMode = "23";
+let arcadeOn = false, autoId = 0, autoLeft = 0;   // arcade: 5s per question, hands off after 3s
 let collected = store.get("bonus", []);
 let records = store.get("records", []);
 let lastName = store.get("name", "");
@@ -367,6 +452,8 @@ let retroOn = store.get("retro", false);
 let soundOn = store.get("sound", true);
 if(retroOn) document.body.classList.add("retro");
 const BONUS = ["bonus1","bonus2","bonus3","bonus4","bonus5","bonus6","bonus7"];
+const ARCADE_TIME = 5000, AUTO_MS = 3000;
+function arcadeUnlocked(){ return BONUS.every(k=>collected.includes(k)); }
 const app = document.getElementById("app");
 const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -388,9 +475,31 @@ function setLang(l){
 }
 function cycleLang(){ setLang(lang==="de"?"fr":lang==="fr"?"en":"de"); }
 
+function clearAuto(){
+  if(autoId){ clearInterval(autoId); autoId=0; }
+  const nb = document.getElementById("next");
+  if(nb && nb.dataset.lbl) nb.textContent = nb.dataset.lbl;   // drop the countdown again
+}
+function startAuto(btn, fn){
+  clearAuto();
+  if(!arcadeOn) return;
+  autoLeft = Math.round(AUTO_MS/1000);
+  const paint = ()=>{ if(btn) btn.textContent = `${btn.dataset.lbl} · ${autoLeft}`; };
+  paint();
+  autoId = setInterval(()=>{
+    if(--autoLeft <= 0){ clearAuto(); fn(); return; }
+    paint();
+  }, 1000);
+}
+function setArcadeSkin(v){
+  document.body.classList.toggle("arcade", v);
+  document.body.classList.toggle("retro", !v && retroOn);
+}
+
 /* ---------------- start ---------------- */
 function renderStart(){
   phase="start";
+  clearAuto(); arcadeOn=false; setArcadeSkin(false);
   app.innerHTML = `
   <div class="corner">${ctl()}</div>
   <div class="start">
@@ -409,6 +518,10 @@ function renderStart(){
     <button class="btn" id="startbtn">${t().start10}</button>
     <button class="btn alt" id="startall">${t().startAll}</button>
     <button class="btn alt" id="startblitz">${t().startBlitz}</button>
+    ${arcadeUnlocked()
+      ? `<button class="btn arc" id="startarcade">${t().startArcade}</button>
+         <p class="rules arcnote">${t().arcadeRules}</p>`
+      : `<p class="rules lockhint">🔒 ${t().arcadeLocked} <b>${collected.length}/${BONUS.length}</b></p>`}
     <p class="rules">${t().rules}</p>
     <p class="buildtag">__BUILD__</p>
     <p class="rules best" id="bestline" style="${records.length?"":"display:none"}">${records.length? `🏆 ${t().best}: ${records[0].score} · ${esc(records[0].name)} 📱` : ""}</p>
@@ -418,6 +531,8 @@ function renderStart(){
   document.getElementById("startbtn").onclick = ()=>startGame(10);
   document.getElementById("startall").onclick = ()=>startGame();
   document.getElementById("startblitz").onclick = ()=>startGame(10, 10000);
+  const sa=document.getElementById("startarcade");
+  if(sa) sa.onclick = ()=>startGame(null, ARCADE_TIME, true);
   const ny=document.getElementById("notyou");
   if(ny) ny.onclick=()=>{
     playerToken=""; lastName=""; collected=[];
@@ -427,10 +542,11 @@ function renderStart(){
   refreshBoard();
 }
 
-function startGame(n, tms){
+function startGame(n, tms, arcade){
   qi=0; score=0; streak=0; correctCount=0;
   TIME = tms || 25000;
-  gameMode = tms ? "⚡10" : (n ? "10" : "23");
+  arcadeOn = !!arcade; setArcadeSkin(arcadeOn);
+  gameMode = arcadeOn ? "👾23" : (tms ? "⚡10" : (n ? "10" : "23"));
   pendingBonusKey=null; endFx=false; savedThisGame=false;
   A.ensure(); A.unlock(); if(soundOn) A.music();
   round = shuffled(QUESTIONS.length).slice(0, n || QUESTIONS.length).sort((a,b)=>a-b);
@@ -440,6 +556,7 @@ function startGame(n, tms){
 
 /* ---------------- question ---------------- */
 function beginQuestion(){
+  clearAuto();
   picked=-1; timedOut=false; lastGain=0; lastBonus=0; lastSec=99;
   deadline = performance.now() + TIME;
   renderQuestion(true);
@@ -513,7 +630,7 @@ function onTimeout(){
 /* ---------------- reveal ---------------- */
 function renderReveal(){
   phase="reveal";
-  cancelAnimationFrame(rafId);
+  cancelAnimationFrame(rafId); clearAuto();
   const q=QUESTIONS[round[qi]], L=q[lang], od=order[qi];
   const ok = picked===q.correct;
   const img = q.reveal ? IMG[q.reveal] : IMG[q.img];
@@ -539,12 +656,17 @@ function renderReveal(){
           <span class="shape">${SHAPES[pos]}</span><span>${esc(L.o[oi])}</span></button>`;
       }).join("")}
     </div>
+    <div class="fbrow" id="fbrow"><button class="fblink" id="fbask">${t().fbAsk}</button></div>
     <div class="nextrow"><button class="btn" id="next">${qi<round.length-1?t().next:t().last}</button></div>
   </div>`;
   document.getElementById("lc").onclick = cycleLang;
   bindCtl();
-  document.getElementById("next").onclick = next;
-  document.getElementById("next").focus({preventScroll:true});
+  bindFeedback(q.id);
+  const nb = document.getElementById("next");
+  nb.dataset.lbl = nb.textContent;
+  nb.onclick = ()=>{ clearAuto(); next(); };
+  nb.focus({preventScroll:true});
+  startAuto(nb, next);
 }
 function advance(){
   if(qi<round.length-1){ qi++; beginQuestion(); }
@@ -561,6 +683,7 @@ function next(){
 }
 function renderBonus(re, key){
   phase="bonus";
+  clearAuto();
   if(!re){ A.bonus(); burst(); }
   const k = key || lastBonusKey; lastBonusKey = k;
   const bi = BONUS.indexOf(k);
@@ -575,8 +698,10 @@ function renderBonus(re, key){
   document.getElementById("lc").onclick = cycleLang;
   bindCtl();
   const n=document.getElementById("next");
-  n.onclick = ()=>{ A.tap(); advance(); };
+  n.dataset.lbl = n.textContent;
+  n.onclick = ()=>{ clearAuto(); A.tap(); advance(); };
   n.focus({preventScroll:true});
+  startAuto(n, ()=>{ A.tap(); advance(); });
 }
 
 /* ---------------- end ---------------- */
@@ -586,6 +711,7 @@ function tierIdx(){
 }
 function renderEnd(){
   phase="end";
+  clearAuto();
   if(!endFx){ endFx=true; A.fanfare(); if(!reduced){ burst(); setTimeout(burst,300); } }
   app.innerHTML = `
   <div class="corner">${ctl()}</div>
@@ -643,7 +769,7 @@ function renderEnd(){
 /* ---------------- controls (sound + theme) ---------------- */
 function ctl(){
   return `<button class="iconbtn" id="sb" aria-pressed="${soundOn}" title="Sound">${soundOn?"🔊":"🔇"}</button>`+
-         `<button class="iconbtn${retroOn?" on":""}" id="tb" aria-pressed="${retroOn}" title="80s">🕹️</button>`;
+         (arcadeOn ? "" : `<button class="iconbtn${retroOn?" on":""}" id="tb" aria-pressed="${retroOn}" title="80s">🕹️</button>`);
 }
 function bindCtl(){
   const sb=document.getElementById("sb"), tb=document.getElementById("tb");
@@ -774,10 +900,11 @@ function recListHtml(){
   const icon = boardRows ? "🌍" : "📱";
   if(!top.length) return `<div class="rectitle">${t().recTitle} ${icon}</div><div class="recrow"><span>–</span><span></span></div>`;
   return `<div class="rectitle">${t().recTitle} ${icon}</div>` + top.map((r,i)=>
-    `<div class="recrow"><span>${i+1}. ${esc(r.name)}</span><span>${r.mode} · <b>${r.score}</b></span></div>`).join("");
+    `<div class="recrow"><span>${i+1}. ${esc(r.name)}${r.bonus?` <b class="bpt">+${r.bonus}</b>`:""}</span>`+
+    `<span>${r.mode} · <b>${r.score}</b></span></div>`).join("");
 }
 function chipsHtml(){
-  return ["all","23","10","⚡10"].map(f=>
+  return ["all","23","10","⚡10","👾23"].map(f=>
     `<button class="chip ${boardFilter===f?"on":""}" data-f="${f}">${f==="all"?t().filtAll:f}</button>`).join("");
 }
 function bindChips(){
@@ -798,6 +925,64 @@ async function cloudTop(){
     const rows = await r.json();
     return Array.isArray(rows) ? rows : null;
   }catch(e){ return null; }
+}
+async function sendFeedback(qid, claim){
+  if(!SUPA_URL) return false;
+  try{
+    const r = await fetch(SUPA_URL+"/rest/v1/feedback", {
+      method:"POST",
+      headers:{ apikey:SUPA_KEY, Authorization:"Bearer "+SUPA_KEY,
+                "Content-Type":"application/json", Prefer:"return=minimal" },
+      body: JSON.stringify({ qid, claim, name:lastName||null, token:playerToken||null, lang })
+    });
+    return r.ok;
+  }catch(e){ return false; }
+}
+function bindFeedback(qid){
+  const row = document.getElementById("fbrow"), ask = document.getElementById("fbask");
+  if(!row || !ask) return;
+  ask.onclick = ()=>{
+    clearAuto();               // never yank the screen away mid-typing
+    A.tap();
+    row.innerHTML = `<input id="fbtxt" maxlength="120" placeholder="${t().fbPh}">`+
+                    `<button class="btn small" id="fbsend">${t().fbSend}</button>`;
+    const txt = document.getElementById("fbtxt");
+    txt.focus({preventScroll:true});
+    document.getElementById("fbsend").onclick = async ()=>{
+      const claim = (txt.value||"").trim();
+      if(!claim){ txt.focus(); return; }
+      row.innerHTML = `<span class="fbmsg">…</span>`;
+      const ok = await sendFeedback(qid, claim);
+      row.innerHTML = `<span class="fbmsg">${ok ? t().fbThanks : t().fbFail}</span>`;
+    };
+  };
+}
+async function cloudBonus(){
+  if(!SUPA_URL) return null;
+  try{
+    const r = await fetch(SUPA_URL+"/rest/v1/bonus?select=name,points",
+      { headers:{ apikey:SUPA_KEY, Authorization:"Bearer "+SUPA_KEY } });
+    if(!r.ok) return null;
+    const rows = await r.json();
+    return Array.isArray(rows) ? rows : null;
+  }catch(e){ return null; }
+}
+/* Awarded for a confirmed wrong-answer report: the points land on that player's
+   best run. Someone credited before they ever saved a score gets their own row. */
+function mergeBonus(rows, bonus){
+  if(!bonus || !bonus.length) return rows;
+  const sum = new Map();
+  bonus.forEach(b=>{ const k=(b.name||"").trim().toLowerCase();
+    if(k) sum.set(k, (sum.get(k)||0) + (+b.points||0)); });
+  const out = rows.map(r=>({...r}));
+  sum.forEach((pts, k)=>{
+    let best = null;
+    out.forEach(r=>{ if((r.name||"").trim().toLowerCase()===k && (!best || r.score>best.score)) best=r; });
+    if(best){ best.score += pts; best.bonus = pts; }
+    else out.push({ name:bonus.find(b=>(b.name||"").trim().toLowerCase()===k).name,
+                    score:pts, mode:"🎁", bonus:pts });
+  });
+  return out.sort((a,b)=>b.score-a.score);
 }
 async function cloudSave(rec){
   if(!SUPA_URL) return;
@@ -844,14 +1029,14 @@ async function playerSync(push){
 }
 function personalLink(){ return location.origin+location.pathname+"#p="+playerToken; }
 async function refreshBoard(){
-  const rows = await cloudTop();
+  const [rows, bonus] = await Promise.all([cloudTop(), cloudBonus()]);
   if(!rows || !rows.length) return;
-  boardRows = rows;
+  boardRows = mergeBonus(rows, bonus);
   const el = document.getElementById("reclist");
   if(el && phase==="end") el.innerHTML = recListHtml();
   const bl = document.getElementById("bestline");
   if(bl && phase==="start"){
-    bl.innerHTML = `🏆 ${t().best}: ${rows[0].score} · ${esc(rows[0].name)} 🌍`;
+    bl.innerHTML = `🏆 ${t().best}: ${boardRows[0].score} · ${esc(boardRows[0].name)} 🌍`;
     bl.style.display = "";
   }
 }

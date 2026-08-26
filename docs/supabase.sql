@@ -56,3 +56,50 @@ grant execute on function public.player_upsert(uuid, text, jsonb, text) to anon;
 grant execute on function public.player_by_fp(text) to anon;
 grant execute on function public.player_by_name(text) to anon;
 notify pgrst, 'reload schema';
+
+-- ---------------------------------------------------------------------------
+-- 2026-08-26: arcade mode, wrong-answer reports, bonus points
+-- ---------------------------------------------------------------------------
+
+-- the arcade run (23 questions, 5 s each) saves under mode '👾23'
+alter table public.scores drop constraint if exists scores_mode_check;
+alter table public.scores add constraint scores_mode_check
+  check (mode in ('23','10','⚡10','👾23'));
+
+-- players reporting an answer they believe is wrong. Insert-only: nobody reads
+-- anyone else's report from the client, they are reviewed in the dashboard.
+create table if not exists public.feedback (
+  id bigint generated always as identity primary key,
+  qid text not null check (char_length(qid) between 1 and 40),
+  claim text not null check (char_length(claim) between 1 and 200),
+  name text check (char_length(name) between 1 and 14),
+  token uuid,
+  lang text check (lang in ('de','fr','en')),
+  created_at timestamptz not null default now()
+);
+alter table public.feedback enable row level security;
+drop policy if exists "anon insert" on public.feedback;
+create policy "anon insert" on public.feedback for insert to anon with check (true);
+
+-- manually granted points, e.g. 1000 for a confirmed report. Read-only for the
+-- client, which adds them to that player's best run on the leaderboard.
+create table if not exists public.bonus (
+  id bigint generated always as identity primary key,
+  name text not null check (char_length(name) between 1 and 14),
+  points int not null check (points between -40000 and 40000),
+  reason text,
+  created_at timestamptz not null default now()
+);
+alter table public.bonus enable row level security;
+drop policy if exists "anon read" on public.bonus;
+create policy "anon read" on public.bonus for select to anon using (true);
+
+-- Luki and Franky reported that Martin's neighbour is Sidney, not Frank.
+insert into public.bonus (name, points, reason)
+select v.name, v.points, v.reason
+from (values ('Luki', 1000, 'neighbor: Sidney'),
+             ('Franky', 1000, 'neighbor: Sidney')) as v(name, points, reason)
+where not exists (
+  select 1 from public.bonus b where b.name = v.name and b.reason = v.reason);
+
+notify pgrst, 'reload schema';

@@ -36,6 +36,19 @@ const WRITE = ["POST", "PUT", "PATCH", "DELETE"];
   const byFp = await p.evaluate(() => rpc("player_by_fp", { pfp: "__nofingerprint__" }));
   const rpcOk = Array.isArray(get) && Array.isArray(byName) && Array.isArray(byFp);
 
+  // PGRST205 means the table itself is missing; a permission error means it exists.
+  const probe = await p.evaluate(async path => {
+    try {
+      const r = await fetch(SUPA_URL + "/rest/v1/" + path,
+        { headers: { apikey: SUPA_KEY, Authorization: "Bearer " + SUPA_KEY } });
+      const txt = await r.text();
+      return { status: r.status, code: (txt && txt[0] === "{" ? JSON.parse(txt).code : null) || null };
+    } catch (e) { return { status: 0, code: "FETCH" }; }
+  }, "feedback?select=id&limit=1");
+  const feedbackTable = probe.code !== "PGRST205" && probe.code !== "FETCH";
+  const bonusRows = await p.evaluate(() => cloudBonus());
+  const bonusTable = Array.isArray(bonusRows);
+
   // refreshBoard() runs on the start screen: with cloud rows the teaser must carry the 🌍 marker.
   const teaser = await p.$eval("#bestline", e => e.textContent).catch(() => "");
   const boardWired = !reachable || !rows.length || teaser.includes("🌍");
@@ -46,11 +59,16 @@ const WRITE = ["POST", "PUT", "PATCH", "DELETE"];
   console.log("rpc grants:", { player_get: Array.isArray(get), player_by_name: Array.isArray(byName), player_by_fp: Array.isArray(byFp) });
   if (!rpcOk) console.error("  -> player RPCs missing: apply docs/supabase.sql in the Supabase SQL editor.\n" +
     "     Without them the identity feature (cross-device profile, bonus sync, #p= link) silently no-ops.");
+  console.log("tables:", { feedback: feedbackTable, bonus: bonusTable },
+    bonusTable ? `| ${bonusRows.length} bonus row(s)` : "");
+  if (!feedbackTable || !bonusTable) console.error(
+    "  -> feedback/bonus tables missing: apply docs/supabase.sql in the Supabase SQL editor.\n" +
+    "     That script also widens the scores mode check to '\uD83D\uDC7E23' — without it arcade runs cannot save.");
   console.log("teaser:", teaser.trim() || "(empty)", "| wired:", boardWired);
   console.log("writes aborted:", aborted.length ? aborted : "none attempted");
   console.log("JS ERRORS:", errors.length ? errors : "none");
   await b.close();
-  const ok = reachable && shapeOk && sorted && rpcOk && boardWired && errors.length === 0;
+  const ok = reachable && shapeOk && sorted && rpcOk && feedbackTable && bonusTable && boardWired && errors.length === 0;
   if (!ok) { console.error("ASSERTIONS FAILED"); process.exit(1); }
   console.log("ALL PASS");
 })().catch(e => { console.error("FAIL:", e.message); process.exit(1); });
