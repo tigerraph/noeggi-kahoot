@@ -139,6 +139,12 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   const fbMsg = await p.$eval(".fbmsg", e => e.textContent).catch(() => "");
   const fbHeld = (await p.evaluate(() => qi)) === 1 && fbMsg.length > 3 && !fbMsg.includes("\u2026");
 
+  const dedup = await p.evaluate(() => bestPerName([
+    { name:"Raphi", score:4309, mode:"\u26A110" }, { name:"Raphi", score:3668, mode:"\uD83D\uDC7E10" },
+    { name:"raphi", score:9001, mode:"23" }, { name:"Luki", score:14379, mode:"23" }
+  ]).map(r => [r.name, r.score]));
+  const dedupOk = JSON.stringify(dedup) === JSON.stringify([["Luki",14379], ["raphi",9001]]);
+
   const mb = await p.evaluate(() => mergeBonus(
     [{ name:"Luki", score:13379, mode:"23" }, { name:"Rafa", score:11452, mode:"10" }],
     [{ name:"luki", points:1000 }, { name:"Franky", points:1000 }]
@@ -164,6 +170,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
     "| board:", boardOpen, boardClosed);
   console.log("auto label:", autoLbl.trim(), "| dispute:", fbHeld, JSON.stringify(fbMsg.trim()));
   console.log("bonus merge:", JSON.stringify(mb), "|", bonusOk);
+  console.log("dedupe:", JSON.stringify(dedup), "|", dedupOk);
   console.log("JS ERRORS:", errors.length ? errors : "none");
   await b.close();
   const ok = r1.rounds === 10 && r1.bonus === 3 && r1.gal === 3 && r1.lock === 4 &&
@@ -174,7 +181,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
              arcLocked && eggPartial && eggOpen && eggLockedAgain &&
              boardOpen && boardClosed &&
              arcOpen && arcSkin && arcTime === 5000 && arcLen === 10 &&
-             arcMode === "\uD83D\uDC7E10" && /\d/.test(autoLbl) && autoAdvanced && fbHeld && bonusOk &&
+             arcMode === "\uD83D\uDC7E10" && /\d/.test(autoLbl) && autoAdvanced && fbHeld && bonusOk && dedupOk &&
              errors.length === 0;
   if (!ok) { console.error("ASSERTIONS FAILED"); process.exit(1); }
   console.log("ALL PASS");

@@ -560,7 +560,7 @@ function renderStart(){
       <span class="besttitle">🏆 ${t().recTitle}</span>
       <span class="bestrow" id="bestrow"></span>
     </button>
-    <p class="buildtag">Build 26.08. · 11:30</p>
+    <p class="buildtag">Build 26.08. · 11:37</p>
   </div>`;
   app.querySelectorAll("[data-lang]").forEach(b=>b.onclick=()=>setLang(b.dataset.lang));
   bindCtl();
@@ -959,7 +959,7 @@ let boardRows = null, boardFilter = "all";
    opens the full board on tap. */
 let attractId = 0, attractIdx = 0;
 function stopAttract(){ if(attractId){ clearInterval(attractId); attractId=0; } }
-function bestSrc(){ return (boardRows && boardRows.length) ? boardRows : records; }
+function bestSrc(){ return bestPerName((boardRows && boardRows.length) ? boardRows : records); }
 function paintBest(){
   const bl = document.getElementById("bestline"), row = document.getElementById("bestrow");
   if(!bl || !row){ stopAttract(); return; }
@@ -992,9 +992,20 @@ function openBoard(){
   document.body.appendChild(d);
   A.tap();
 }
+/* One row per player, their best run in whatever view is showing. A wedding
+   board should answer "who is ahead", not "who played most". */
+function bestPerName(rows){
+  const seen = new Map();
+  rows.forEach(r=>{
+    const k = (r.name||"").trim().toLowerCase();
+    const prev = seen.get(k);
+    if(!prev || r.score > prev.score) seen.set(k, r);
+  });
+  return [...seen.values()].sort((a,b)=>b.score-a.score);
+}
 function recListHtml(){
   const src = boardRows || records;
-  const rows = boardFilter==="all" ? src : src.filter(r=>r.mode===boardFilter);
+  const rows = bestPerName(boardFilter==="all" ? src : src.filter(r=>r.mode===boardFilter));
   const top = rows.slice(0,8);
   const icon = boardRows ? "🌍" : "📱";
   if(!top.length) return `<div class="rectitle">${t().recTitle} ${icon}</div><div class="recrow"><span>–</span><span></span></div>`;
