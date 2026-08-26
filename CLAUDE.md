@@ -7,7 +7,8 @@ deployt auf GitHub Pages (tigerraph.github.io/noeggi-kahoot).
 - `src/template.html` — komplettes Spiel (CSS/JS) mit Platzhaltern `__FONT_CSS__`, `__IMG__`, `__DATA__`, `__BUILD__`
 - `src/questions.json` — 23 Fragen, trilingual (de/fr/en), `correct` = Index, `img` = Bild-Key
 - Modi: `10` (Schnellrunde), `23` (alle), `⚡10` (Blitz, 10 Sek.), `👾23` (Arcade, 5 Sek. + Auto-Weiter
-  nach 3 Sek., freigeschaltet erst wenn alle 7 Bonusfotos gesammelt sind)
+  nach 3 Sek.). Arcade öffnet sich über alle 7 Bonusfotos ODER als Easter Egg, wenn alle drei
+  Polaroids im Startscreen-Fächer angetippt werden (`nk_arc` im localStorage, geräteweit).
 - `assets/webimg_slim/` — 680px-Bilder, die eingebettet werden (34 Stück, inkl. bonus1–7)
 - `assets/webimg/` — 880px-Master (nur Quelle für Re-Kompression)
 - `scripts/build.py` — bettet Fonts (node_modules/@fontsource), Bilder und Daten ein → `dist/index.html`

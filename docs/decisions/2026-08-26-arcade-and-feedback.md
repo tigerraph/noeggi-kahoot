@@ -15,3 +15,7 @@
   besten Lauf des Namens (case-insensitive) und markiert die Zeile mit `+1000`.
 - `build.py` benutzte `datetime.UTC` (Python 3.11+); auf dem Mac gewinnt `/usr/bin/python3` 3.9.6
   im PATH und der Build brach ab. Jetzt `datetime.timezone.utc`.
+- Easter Egg: alle drei Polaroids im Startscreen-Fächer antippen schaltet Arcade ebenfalls frei.
+  Die Polaroids bleiben `aria-hidden` — es ist ein Geheimnis, kein Bedienelement — und tragen bewusst
+  kein `cursor:pointer`, sonst verrät es sich am Desktop. Rückmeldung pro Treffer ist ein Goldring
+  (kein `transform`, den brauchen die Polaroids für die Fächer-Position).

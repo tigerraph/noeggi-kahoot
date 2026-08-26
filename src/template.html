@@ -87,6 +87,7 @@ h1.title{
 .fan .f2{left:28%; top:0; transform:rotate(1.5deg); z-index:3;}
 .fan .f3{right:0; top:18px; transform:rotate(6deg); z-index:2;}
 .fan .polaroid::before{width:56px; height:18px; top:-9px;}
+.fan .polaroid.egg{box-shadow:0 10px 26px rgba(0,0,0,.45), 0 0 0 3px var(--gold); filter:brightness(1.12);}
 
 /* ---------- top bar ---------- */
 .top{display:flex; align-items:center; gap:10px; padding:2px 0 10px;}
@@ -453,7 +454,8 @@ let soundOn = store.get("sound", true);
 if(retroOn) document.body.classList.add("retro");
 const BONUS = ["bonus1","bonus2","bonus3","bonus4","bonus5","bonus6","bonus7"];
 const ARCADE_TIME = 5000, AUTO_MS = 3000;
-function arcadeUnlocked(){ return BONUS.every(k=>collected.includes(k)); }
+let arcEgg = store.get("arc", false), eggHits = [];
+function arcadeUnlocked(){ return arcEgg || BONUS.every(k=>collected.includes(k)); }
 const app = document.getElementById("app");
 const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -533,6 +535,17 @@ function renderStart(){
   document.getElementById("startblitz").onclick = ()=>startGame(10, 10000);
   const sa=document.getElementById("startarcade");
   if(sa) sa.onclick = ()=>startGame(null, ARCADE_TIME, true);
+  app.querySelectorAll(".fan .polaroid").forEach((el,i)=>{
+    el.onclick = ()=>{
+      if(arcadeUnlocked()) return;
+      if(!eggHits.includes(i)){ eggHits.push(i); el.classList.add("egg"); A.tap(); }
+      if(eggHits.length === 3){
+        arcEgg = true; store.set("arc", true); eggHits = [];
+        A.bonus(); if(!reduced) burst();
+        renderStart();
+      }
+    };
+  });
   const ny=document.getElementById("notyou");
   if(ny) ny.onclick=()=>{
     playerToken=""; lastName=""; collected=[];

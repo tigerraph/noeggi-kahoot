@@ -81,6 +81,16 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   // arcade stays locked until the full bonus gallery is collected
   await p.goto(url, { waitUntil: "load" }); await sleep(250);
   const arcLocked = (await p.$("#startarcade")) === null && (await p.$(".lockhint")) !== null;
+  // easter egg: tapping all three start-screen polaroids opens arcade as well
+  const fans = await p.$$(".fan .polaroid");
+  await fans[0].click(); await fans[1].click(); await sleep(120);
+  const eggPartial = (await p.$("#startarcade")) === null && (await p.$$(".fan .polaroid.egg")).length === 2;
+  await (await p.$$(".fan .polaroid"))[2].click(); await sleep(350);
+  const eggOpen = (await p.$("#startarcade")) !== null;
+  await p.evaluate(() => localStorage.removeItem("nk_arc"));
+  await p.goto(url, { waitUntil: "load" }); await sleep(250);
+  const eggLockedAgain = (await p.$("#startarcade")) === null;
+
   await p.evaluate(ks => localStorage.setItem("nk_bonus", JSON.stringify(ks)),
     ["bonus1","bonus2","bonus3","bonus4","bonus5","bonus6","bonus7"]);
   await p.goto(url, { waitUntil: "load" }); await sleep(250);
@@ -133,6 +143,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   console.log("content conf1998:", q1998.de, "| neighbor:", qNb.de, "|", contentOk);
   console.log("blitz bar:", w0.toFixed(1), "->", w1.toFixed(1));
   console.log("arcade:", { arcLocked, arcOpen, arcSkin, arcTime, arcLen, arcMode, autoAdvanced });
+  console.log("egg:", { eggPartial, eggOpen, eggLockedAgain });
   console.log("auto label:", autoLbl.trim(), "| dispute:", fbHeld, JSON.stringify(fbMsg.trim()));
   console.log("bonus merge:", JSON.stringify(mb), "|", bonusOk);
   console.log("JS ERRORS:", errors.length ? errors : "none");
@@ -142,7 +153,8 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
              savedLabel.includes("\u2713") && listHas && zero && ten && lb1 && lb2 &&
              plink && tok1 && adopted && fpOk && hello1 && hello2 && nameCleared && teaser &&
              (w0 - w1) > 12 && contentOk &&
-             arcLocked && arcOpen && arcSkin && arcTime === 5000 && arcLen === 23 &&
+             arcLocked && eggPartial && eggOpen && eggLockedAgain &&
+             arcOpen && arcSkin && arcTime === 5000 && arcLen === 23 &&
              arcMode === "\uD83D\uDC7E23" && /\d/.test(autoLbl) && autoAdvanced && fbHeld && bonusOk &&
              errors.length === 0;
   if (!ok) { console.error("ASSERTIONS FAILED"); process.exit(1); }
