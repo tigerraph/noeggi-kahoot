@@ -33,9 +33,18 @@ deployt auf GitHub Pages (tigerraph.github.io/noeggi-kahoot).
 9. Neue Modi brauchen zwingend eine Erweiterung des `scores.mode`-CHECK in `docs/supabase.sql` — sonst
    scheitert das Speichern still und der Lauf ist weg.
 
+## Arbeitsweise mit Rafa
+- Vor JEDER Antwort zu diesem Projekt zuerst `npm run status` laufen lassen und Neues zuerst melden.
+  Meldungen und Scores kommen von Gästen herein, ohne dass irgendjemand benachrichtigt wird.
+- Rafa führt selber KEINE Terminal-Befehle aus. Alle npm-/git-Operationen macht Claude Code.
+- Muss Rafa SQL ausführen, immer die direkte Editor-URL mitliefern:
+  https://supabase.com/dashboard/project/opgbezlecbggnqzlvhja/sql/new
+- Bei UI-Änderungen jede betroffene Ansicht rendern und Kontrast sowie Overflow messen, nicht per Augenmass.
+
 ## Befehle
     npm install        # einmalig (Fonts + Puppeteer)
     npm run build      # dist/index.html erzeugen
     npm run verify     # Regressionssuite (offline)
     npm run verify:online  # Cloud-Smoke gegen Supabase (optional, nur lesend)
+    npm run status     # Meldungen, Scores, Bonus, Live-Build (nur lesend)
     npm run deploy     # build + verify + commit + push
