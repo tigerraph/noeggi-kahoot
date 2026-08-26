@@ -276,24 +276,27 @@ body.retro .reclist{box-shadow:0 0 12px rgba(45,226,230,.2);}
 
 /* ---------- arcade mode (unlocked by the full bonus gallery) ---------- */
 body.arcade{
-  --bg0:#5b5fe0; --bg1:#6a6ef0; --glow:#8f92ff;
-  --cream:#f6f7ff; --cream-dim:#dcdefb; --ink:#0f1236;
+  /* #5458e2 is the lightest ground that still carries small white text at 5.4:1 */
+  --bg0:#4b4fd6; --bg1:#5458e2; --glow:#7a7ef0;
+  --cream:#ffffff; --cream-dim:#ffffff; --ink:#0f1236;
   --gold:#ffd233; --gold-deep:#000; --gold-hi:#fff;
   --tape:#000; --neon2:#ffd233;
   --red:#e2564a; --blue:#9aa0e8; --yellow:#f0b429; --green:#4aa96c;
-  background:#6a6ef0; background-attachment:fixed;
+  background:#5458e2; background-attachment:fixed;
 }
 body.arcade img{image-rendering:pixelated;}
 body.arcade .title, body.arcade .kicker, body.arcade .btitle, body.arcade .bigpts,
 body.arcade .tier, body.arcade .rectitle, body.arcade .qcount, body.arcade .scorechip,
 body.arcade .btn, body.arcade .pill, body.arcade .tile{
-  font-family:'Press Start 2P','Archivo Black',monospace; text-transform:uppercase;}
+  font-family:'Press Start 2P','Apple Color Emoji','Segoe UI Emoji','Archivo Black',monospace;
+  text-transform:uppercase;}
 body.arcade .title{font-size:clamp(.95rem,4.8vw,1.5rem); line-height:1.6; color:#fff; text-shadow:4px 4px 0 #000;}
 body.arcade .title .amp{color:var(--gold);}
 body.arcade .kicker{font-size:.6rem; letter-spacing:.18em; color:#fff;}
 body.arcade .sub, body.arcade .sub2, body.arcade .rules, body.arcade .qtext, body.arcade .banner small{
   font-family:'Nunito',sans-serif; text-transform:none;}
-body.arcade .bigpts{font-size:clamp(1.6rem,8vw,2.4rem); color:var(--gold); text-shadow:4px 4px 0 #000;}
+body.arcade .bigpts{font-size:clamp(1.4rem,7vw,2rem); color:var(--gold); text-shadow:none;
+  background:#0f1236; border:3px solid #000; box-shadow:6px 6px 0 #000; padding:10px 20px;}
 body.arcade .tier{font-size:clamp(.85rem,4vw,1.15rem); line-height:1.6; color:#fff; text-shadow:3px 3px 0 #000;}
 body.arcade .btitle{font-size:clamp(.75rem,3.8vw,1rem); line-height:1.7; color:var(--gold); text-shadow:3px 3px 0 #000;}
 body.arcade .qcount, body.arcade .scorechip{font-size:.5rem; border-radius:0; border:2px solid #000; background:#fff; color:#000;}
@@ -316,7 +319,7 @@ body.arcade .btn.ghost{background:transparent; border:none; box-shadow:none; col
 body.arcade .pill{font-size:.5rem; border-radius:0; border:2px solid #000; background:#fff; color:#000;}
 body.arcade .pill.on{background:var(--gold);}
 body.arcade .iconbtn, body.arcade .langcycle{border-radius:0; border:2px solid #000; background:#fff; color:#000;}
-body.arcade .langcycle{font-family:'Press Start 2P',monospace; font-size:.5rem;}
+body.arcade .langcycle{font-family:'Press Start 2P','Apple Color Emoji',monospace; font-size:.5rem;}
 body.arcade .timer{height:14px; border-radius:0; border:3px solid #000; background:#fff; padding:0;}
 body.arcade .timer i{border-radius:0; background:var(--gold);}
 body.arcade .polaroid{border-radius:0; border:3px solid #000; box-shadow:8px 8px 0 #000; transform:none;}
@@ -330,8 +333,11 @@ body.arcade .chips .chip{border-width:2px; box-shadow:3px 3px 0 #000; font-size:
 body.arcade .chips .chip.on{background:var(--gold); color:#000;}
 body.arcade .rectitle{font-size:.5rem; color:var(--gold);}
 body.arcade .gal .locked{border-radius:0; border:3px solid #000; background:#0f1236;}
-body.arcade .fbrow input, body.arcade #pname{border-radius:0; border:3px solid #000; background:#fff;}
-body.arcade .fblink, body.arcade .rules, body.arcade .buildtag{color:#fff; opacity:.85;}
+body.arcade .fbrow input, body.arcade #pname{border-radius:0; border:3px solid #000; background:#fff; color:#000;}
+body.arcade .fbrow input::placeholder, body.arcade #pname::placeholder{color:#555; opacity:1;}
+body.arcade .fbmsg{color:#fff;}
+body.arcade .fblink, body.arcade .rules, body.arcade .buildtag{color:#fff; opacity:.9;}
+body.arcade .end{gap:11px;}   /* pixel type needs less air between blocks */
 </style>
 </head>
 <body>
@@ -529,7 +535,7 @@ function renderStart(){
          <p class="rules arcnote">${t().arcadeRules}</p>`
       : `<p class="rules lockhint">🔒 ${t().arcadeLocked} <b>${collected.length}/${BONUS.length}</b></p>`}
     <p class="rules">${t().rules}</p>
-    <p class="buildtag">Build 26.08. · 09:45</p>
+    <p class="buildtag">Build 26.08. · 09:56</p>
     <p class="rules best" id="bestline" style="${records.length?"":"display:none"}">${records.length? `🏆 ${t().best}: ${records[0].score} · ${esc(records[0].name)} 📱` : ""}</p>
   </div>`;
   app.querySelectorAll("[data-lang]").forEach(b=>b.onclick=()=>setLang(b.dataset.lang));
