@@ -15,8 +15,12 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   const url = "file://" + path.resolve(__dirname, "../dist/index.html");
   await p.goto(url, { waitUntil: "load" });
 
-  async function play(startSel, pickFn) {
-    await p.click(startSel);
+  const ARC = '.mode[data-m="\uD83D\uDC7E10"]';
+  const arcLk = () => p.$eval(ARC, e => e.classList.contains("lk"));
+  async function pickMode(m) { await p.click(`.mode[data-m="${m}"]`); }
+  async function play(mode, pickFn) {
+    await pickMode(mode);
+    await p.click("#playbtn");
     let rounds = 0, bonus = 0;
     while (true) {
       await p.waitForSelector(".grid .tile:not([disabled])");
@@ -34,7 +38,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
       lock: await p.$$eval(".gal .locked", e => e.length) };
   }
 
-  const r1 = await play("#startbtn", (i, c) => c);
+  const r1 = await play("10", (i, c) => c);
   await p.type("#pname", "Rafa");
   await p.click("#savebtn"); await sleep(200);
   const savedLabel = await p.$eval("#savebtn", e => e.textContent);
@@ -46,7 +50,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   const ten = (await p.$eval("#reclist", e => e.textContent)).includes("Rafa");
   await chips[0].click(); await sleep(150);
   await p.click("#again"); await sleep(200);
-  const r2 = await play("#startall", (i, c) => c);
+  const r2 = await play("23", (i, c) => c);
 
   const plink = await p.$(".plink") !== null;
   const tok1 = await p.evaluate(() => localStorage.getItem("nk_ptoken"));
@@ -66,36 +70,48 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   const nameCleared = await p.evaluate(() => JSON.parse(localStorage.getItem("nk_name") || '""')) === "";
 
   await p.goto(url, { waitUntil: "load" }); await sleep(300);
-  const teaser = await p.$(".best") !== null;
+  const teaser = await p.$(".best.show") !== null;
   await p.goto("about:blank");
   await p.goto(url + "#p=11112222-3333-4444-5555-666677778888", { waitUntil: "load" }); await sleep(400);
   const adopted = (await p.evaluate(() => localStorage.getItem("nk_ptoken"))).includes("1111");
   await p.goto(url, { waitUntil: "load" }); await sleep(300);
 
-  await p.click("#startblitz");
+  await pickMode("\u26A110");
+  await p.click("#playbtn");
   await p.waitForSelector(".grid .tile:not([disabled])");
+  await p.waitForFunction(() => { const e = document.getElementById("tbar"); return e && e.style.width; });
   const w0 = await p.$eval("#tbar", e => parseFloat(e.style.width));
   await sleep(1600);
   const w1 = await p.$eval("#tbar", e => parseFloat(e.style.width));
 
   // arcade stays locked until the full bonus gallery is collected
   await p.goto(url, { waitUntil: "load" }); await sleep(250);
-  const arcLocked = (await p.$("#startarcade")) === null && (await p.$(".lockhint")) !== null;
+  const arcLocked = await arcLk();
   // easter egg: tapping all three start-screen polaroids opens arcade as well
   const fans = await p.$$(".fan .polaroid");
   await fans[0].click(); await fans[1].click(); await sleep(120);
-  const eggPartial = (await p.$("#startarcade")) === null && (await p.$$(".fan .polaroid.egg")).length === 2;
+  const eggPartial = (await arcLk()) && (await p.$$(".fan .polaroid.egg")).length === 2;
   await (await p.$$(".fan .polaroid"))[2].click(); await sleep(350);
-  const eggOpen = (await p.$("#startarcade")) !== null;
+  const eggOpen = !(await arcLk());
   await p.evaluate(() => localStorage.removeItem("nk_arc"));
   await p.goto(url, { waitUntil: "load" }); await sleep(250);
-  const eggLockedAgain = (await p.$("#startarcade")) === null;
+  const eggLockedAgain = await arcLk();
 
   await p.evaluate(ks => localStorage.setItem("nk_bonus", JSON.stringify(ks)),
     ["bonus1","bonus2","bonus3","bonus4","bonus5","bonus6","bonus7"]);
   await p.goto(url, { waitUntil: "load" }); await sleep(250);
-  const arcOpen = (await p.$("#startarcade")) !== null;
-  await p.click("#startarcade");
+  const arcOpen = !(await arcLk());
+  // the marquee cycles and opens the full board on tap
+  const b1 = await p.$eval("#bestrow", e => e.textContent);
+  await sleep(2800);
+  const b2 = await p.$eval("#bestrow", e => e.textContent);
+  await p.click("#bestline"); await sleep(250);
+  const boardOpen = (await p.$(".boardbox")) !== null;
+  await p.click(".lightbox"); await sleep(250);
+  const boardClosed = (await p.$(".boardbox")) === null;
+
+  await pickMode("\uD83D\uDC7E10");
+  await p.click("#playbtn");
   await p.waitForSelector(".grid .tile:not([disabled])");
   const arcSkin = await p.$eval("body", e => e.classList.contains("arcade") && !e.classList.contains("retro"));
   const arcTime = await p.evaluate(() => TIME);
@@ -144,6 +160,8 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   console.log("blitz bar:", w0.toFixed(1), "->", w1.toFixed(1));
   console.log("arcade:", { arcLocked, arcOpen, arcSkin, arcTime, arcLen, arcMode, autoAdvanced });
   console.log("egg:", { eggPartial, eggOpen, eggLockedAgain });
+  console.log("marquee:", JSON.stringify(b1.trim()), "->", JSON.stringify(b2.trim()),
+    "| board:", boardOpen, boardClosed);
   console.log("auto label:", autoLbl.trim(), "| dispute:", fbHeld, JSON.stringify(fbMsg.trim()));
   console.log("bonus merge:", JSON.stringify(mb), "|", bonusOk);
   console.log("JS ERRORS:", errors.length ? errors : "none");
@@ -154,6 +172,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
              plink && tok1 && adopted && fpOk && hello1 && hello2 && nameCleared && teaser &&
              (w0 - w1) > 12 && contentOk &&
              arcLocked && eggPartial && eggOpen && eggLockedAgain &&
+             boardOpen && boardClosed &&
              arcOpen && arcSkin && arcTime === 5000 && arcLen === 10 &&
              arcMode === "\uD83D\uDC7E10" && /\d/.test(autoLbl) && autoAdvanced && fbHeld && bonusOk &&
              errors.length === 0;

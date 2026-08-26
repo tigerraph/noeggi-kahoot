@@ -23,6 +23,7 @@ deployt auf GitHub Pages (tigerraph.github.io/noeggi-kahoot).
 3. `npm run deploy` = build + verify + Artefakt committen + push (Pages served von main root).
 4. Build-Stempel unten auf dem Startscreen ("Build TT.MM. · HH:MM") ist die Versionsreferenz.
 5. Inhaltsänderungen (Antworten, Texte) nur in `src/questions.json`; UI/Logik in `src/template.html`.
+   Neue Modi in `MODE_DEFS` + `MODE_ORDER` eintragen und in allen drei `modeNames`/`modeHints` ergänzen.
 6. Backend: Supabase (Scores + Player-Identität), Schema in `docs/supabase.sql`. Anon-Key steckt bewusst im Client.
    Nach Schema-Änderungen `npm run verify:online` laufen lassen — der Client schluckt Backend-Fehler still.
 7. Antworten-Korrekturen kamen von Marco (Quizmaster); Regel: sein als falsch deklarierter Klick = richtige Antwort.

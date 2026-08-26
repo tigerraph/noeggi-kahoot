@@ -20,3 +20,10 @@
   Die Polaroids bleiben `aria-hidden` — es ist ein Geheimnis, kein Bedienelement — und tragen bewusst
   kein `cursor:pointer`, sonst verrät es sich am Desktop. Rückmeldung pro Treffer ist ein Goldring
   (kein `transform`, den brauchen die Polaroids für die Fächer-Position).
+- Startscreen: vier gleichrangige Buttons wurden zu einem Modus-Raster (2×2) plus einem einzigen
+  «Spielen» — das Genre-Muster. Der gesperrte Arcade-Modus bleibt sichtbar und abgeblendet statt
+  versteckt; Antippen erklärt die Freischaltbedingung in der Hinweiszeile, statt eine Dauerzeile zu
+  belegen. Gewählter Modus liegt in `nk_mode`.
+- Die Rekordzeile ist jetzt eine Flipper-Marquee: sie wechselt alle 2.6 s durch die Top 5 (bei
+  `prefers-reduced-motion` statisch) und öffnet auf Tipp das ganze Board als Overlay.
+
