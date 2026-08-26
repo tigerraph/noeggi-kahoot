@@ -46,6 +46,8 @@ const WRITE = ["POST", "PUT", "PATCH", "DELETE"];
     } catch (e) { return { status: 0, code: "FETCH" }; }
   }, "feedback?select=id&limit=1");
   const feedbackTable = probe.code !== "PGRST205" && probe.code !== "FETCH";
+  const fbList = await p.evaluate(() => rpc("feedback_list", {}));
+  const fbReadable = Array.isArray(fbList);
   const bonusRows = await p.evaluate(() => cloudBonus());
   const bonusTable = Array.isArray(bonusRows);
 
@@ -59,6 +61,7 @@ const WRITE = ["POST", "PUT", "PATCH", "DELETE"];
   console.log("rpc grants:", { player_get: Array.isArray(get), player_by_name: Array.isArray(byName), player_by_fp: Array.isArray(byFp) });
   if (!rpcOk) console.error("  -> player RPCs missing: apply docs/supabase.sql in the Supabase SQL editor.\n" +
     "     Without them the identity feature (cross-device profile, bonus sync, #p= link) silently no-ops.");
+  console.log("reports readable:", fbReadable, fbReadable ? `| ${fbList.length} report(s)` : "(feedback_list missing)");
   console.log("tables:", { feedback: feedbackTable, bonus: bonusTable },
     bonusTable ? `| ${bonusRows.length} bonus row(s)` : "");
   if (!feedbackTable || !bonusTable) console.error(
@@ -68,7 +71,7 @@ const WRITE = ["POST", "PUT", "PATCH", "DELETE"];
   console.log("writes aborted:", aborted.length ? aborted : "none attempted");
   console.log("JS ERRORS:", errors.length ? errors : "none");
   await b.close();
-  const ok = reachable && shapeOk && sorted && rpcOk && feedbackTable && bonusTable && boardWired && errors.length === 0;
+  const ok = reachable && shapeOk && sorted && rpcOk && feedbackTable && bonusTable && fbReadable && boardWired && errors.length === 0;
   if (!ok) { console.error("ASSERTIONS FAILED"); process.exit(1); }
   console.log("ALL PASS");
 })().catch(e => { console.error("FAIL:", e.message); process.exit(1); });

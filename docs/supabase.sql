@@ -103,3 +103,18 @@ where not exists (
   select 1 from public.bonus b where b.name = v.name and b.reason = v.reason);
 
 notify pgrst, 'reload schema';
+
+-- ---------------------------------------------------------------------------
+-- 2026-08-26b: read access to reports, without handing out identity tokens
+-- ---------------------------------------------------------------------------
+-- feedback stays insert-only. This function exposes just the reviewable columns,
+-- never `token` — whoever holds a token can adopt that player via the #p= link.
+create or replace function public.feedback_list()
+returns table(created_at timestamptz, qid text, claim text, name text, lang text)
+language sql security definer set search_path = public as
+$$ select f.created_at, f.qid, f.claim, f.name, f.lang
+   from feedback f order by f.created_at desc limit 200 $$;
+grant execute on function public.feedback_list() to anon;
+
+notify pgrst, 'reload schema';
+
