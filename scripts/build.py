@@ -26,7 +26,7 @@ def main():
     imgs = {f.stem: "data:image/jpeg;base64," + b64(f) for f in sorted(imgdir.glob("*.jpg"))}
 
     data = json.loads((ROOT / "src" / "questions.json").read_text(encoding="utf-8"))
-    build = (datetime.datetime.now(datetime.UTC) + datetime.timedelta(hours=2)).strftime("Build %d.%m. · %H:%M")
+    build = (datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=2)).strftime("Build %d.%m. · %H:%M")
 
     tpl = (ROOT / "src" / "template.html").read_text(encoding="utf-8")
     html = (tpl.replace("__FONT_CSS__", font_css)

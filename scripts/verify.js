@@ -78,14 +78,17 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   await sleep(1600);
   const w1 = await p.$eval("#tbar", e => parseFloat(e.style.width));
 
-  const q1998 = await p.evaluate(() => { const q = QUESTIONS.find(x => x.id === "conf1998");
-    return { de: q.de.o[q.correct], en: q.en.o[q.correct] }; });
-  const contentOk = q1998.de.includes("in einem") && q1998.en.includes("at once");
+  const pick = async id => await p.evaluate(qid => { const q = QUESTIONS.find(x => x.id === qid);
+    return { de: q.de.o[q.correct], fr: q.fr.o[q.correct], en: q.en.o[q.correct] }; }, id);
+  const q1998 = await pick("conf1998");
+  const qNb = await pick("neighbor");
+  const contentOk = q1998.de.includes("in einem") && q1998.en.includes("at once") &&
+                    qNb.de === "Sidney" && qNb.fr === "Sidney" && qNb.en === "Sidney";
 
   console.log("quick:", r1, "| full:", r2);
   console.log("save:", savedLabel, listHas, "| chips:", zero, ten, "| lightbox:", lb1, lb2);
   console.log("identity:", { plink, token: !!tok1, adopted, fpOk, hello1, hello2, nameCleared, teaser });
-  console.log("content conf1998:", q1998.de, "|", contentOk);
+  console.log("content conf1998:", q1998.de, "| neighbor:", qNb.de, "|", contentOk);
   console.log("blitz bar:", w0.toFixed(1), "->", w1.toFixed(1));
   console.log("JS ERRORS:", errors.length ? errors : "none");
   await b.close();
