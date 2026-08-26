@@ -4,7 +4,8 @@
   `verify.js` prüft die Antwort jetzt in allen drei Sprachen, analog zu `conf1998`.
 - Vergangene Scores lassen sich nicht nachrechnen — die `scores`-Tabelle hält nur Endsummen,
   keine Einzelantworten. Kompensation läuft deshalb über Bonuspunkte statt über eine Neuberechnung.
-- Arcade-Modus (`👾23`): alle 23 Fragen, 5 Sekunden pro Frage, Auto-Weiter nach 3 Sekunden.
+- Arcade-Modus (`👾10`): 10 zufällige Fragen, 5 Sekunden pro Frage, Auto-Weiter nach 3 Sekunden.
+  Kurz gehalten, damit der Modus als Zugabe funktioniert und nicht als zweites volles Quiz.
   Freischaltung über die vollständige Bonus-Galerie (alle 7 Fotos), nicht über eine Punktzahl —
   das belohnt Serien statt Spielzeit und ist ohne Cloud-Abgleich lokal prüfbar.
 - Look: DOS/Pixel-Skin (`body.arcade`) als eigene Klasse, die den 80s-Skin während des Laufs

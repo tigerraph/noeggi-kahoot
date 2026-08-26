@@ -61,10 +61,10 @@ notify pgrst, 'reload schema';
 -- 2026-08-26: arcade mode, wrong-answer reports, bonus points
 -- ---------------------------------------------------------------------------
 
--- the arcade run (23 questions, 5 s each) saves under mode '👾23'
+-- the arcade run (10 random questions, 5 s each) saves under mode '👾10'
 alter table public.scores drop constraint if exists scores_mode_check;
 alter table public.scores add constraint scores_mode_check
-  check (mode in ('23','10','⚡10','👾23'));
+  check (mode in ('23','10','⚡10','👾10'));
 
 -- players reporting an answer they believe is wrong. Insert-only: nobody reads
 -- anyone else's report from the client, they are reviewed in the dashboard.

@@ -63,7 +63,7 @@ const WRITE = ["POST", "PUT", "PATCH", "DELETE"];
     bonusTable ? `| ${bonusRows.length} bonus row(s)` : "");
   if (!feedbackTable || !bonusTable) console.error(
     "  -> feedback/bonus tables missing: apply docs/supabase.sql in the Supabase SQL editor.\n" +
-    "     That script also widens the scores mode check to '\uD83D\uDC7E23' — without it arcade runs cannot save.");
+    "     That script also widens the scores mode check to '\uD83D\uDC7E10' — without it arcade runs cannot save.");
   console.log("teaser:", teaser.trim() || "(empty)", "| wired:", boardWired);
   console.log("writes aborted:", aborted.length ? aborted : "none attempted");
   console.log("JS ERRORS:", errors.length ? errors : "none");

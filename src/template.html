@@ -382,8 +382,8 @@ const I18N = {
   bonusCaps:["Chica nochmals – sie hat es verdient.","Der Captain, ganz nah.","Sommer 1991: Krabbenjagd statt Game Boy.","Aus Heftis Archiv.","Das Beweisfoto zum Sony Ericsson.","Frisch aus Franks Archiv.","Fast on lime: das Agaven-Selfie."],
   startBlitz:"Blitz · 10 Fragen à 10 Sek.", best:"Rekord", namePh:"Dein Name",
   save:"Score speichern", saved:"Gespeichert ✓", recTitle:"Bestenliste", filtAll:"Alle", linkLbl:"Dein Link – Name & Galerie auf jedem Gerät", share:"Teilen", copied:"Kopiert ✓", wb:"Willkommen zurück", notYou:"nicht du?",
-  startArcade:"👾 Arcade · 23 Fragen à 5 Sek.", arcadeLocked:"👾 Arcade-Modus: sammle alle 7 Bonusfotos.",
-  arcadeRules:"5 Sekunden pro Frage, es geht automatisch weiter.",
+  startArcade:"👾 Arcade · 10 Fragen à 5 Sek.", arcadeLocked:"👾 Arcade-Modus: sammle alle 7 Bonusfotos.",
+  arcadeRules:"10 zufällige Fragen, je 5 Sekunden, es geht automatisch weiter.",
   fbAsk:"Antwort falsch?", fbPh:"Was wäre richtig?", fbSend:"Melden",
   fbThanks:"Danke! Stimmt es, gibt es 1000 Punkte.", fbFail:"Hat nicht geklappt – später nochmals."
  },
@@ -406,8 +406,8 @@ const I18N = {
   bonusCaps:["Encore Chica – elle le mérite.","Le capitaine, de près.","Été 1991\u00a0: chasse aux crabes.","Des archives de Hefti.","La preuve pour le Sony Ericsson.","Tout droit des archives de Frank.","Presque on lime\u00a0: le selfie à l'agave."],
   startBlitz:"Éclair · 10 questions à 10 s", best:"Record", namePh:"Ton nom",
   save:"Enregistrer", saved:"Enregistré ✓", recTitle:"Meilleurs scores", filtAll:"Tous", linkLbl:"Ton lien – nom & galerie sur chaque appareil", share:"Partager", copied:"Copié ✓", wb:"Content de te revoir", notYou:"pas toi\u00a0?",
-  startArcade:"👾 Arcade · 23 questions à 5 s", arcadeLocked:"👾 Mode arcade\u00a0: collectionne les 7 photos bonus.",
-  arcadeRules:"5 secondes par question, ça enchaîne tout seul.",
+  startArcade:"👾 Arcade · 10 questions à 5 s", arcadeLocked:"👾 Mode arcade\u00a0: collectionne les 7 photos bonus.",
+  arcadeRules:"10 questions au hasard, 5 secondes chacune, ça enchaîne tout seul.",
   fbAsk:"Réponse fausse\u00a0?", fbPh:"Quelle serait la bonne\u00a0?", fbSend:"Signaler",
   fbThanks:"Merci\u00a0! Si c'est juste, 1000 points.", fbFail:"Échec – réessaie plus tard."
  },
@@ -430,8 +430,8 @@ const I18N = {
   bonusCaps:["Chica again – she earned it.","The captain, up close.","Summer '91: crab hunting.","From Hefti's archive.","The Sony Ericsson evidence.","Straight from Frank's archive.","Almost on lime: the agave selfie."],
   startBlitz:"Lightning · 10 questions · 10 s", best:"Best", namePh:"Your name",
   save:"Save score", saved:"Saved ✓", recTitle:"High scores", filtAll:"All", linkLbl:"Your link – name & gallery on any device", share:"Share", copied:"Copied ✓", wb:"Welcome back", notYou:"not you?",
-  startArcade:"👾 Arcade · 23 questions · 5 s", arcadeLocked:"👾 Arcade mode: collect all 7 bonus photos.",
-  arcadeRules:"5 seconds per question, it advances on its own.",
+  startArcade:"👾 Arcade · 10 questions · 5 s", arcadeLocked:"👾 Arcade mode: collect all 7 bonus photos.",
+  arcadeRules:"10 random questions, 5 seconds each, it advances on its own.",
   fbAsk:"Answer wrong?", fbPh:"What would be right?", fbSend:"Report",
   fbThanks:"Thanks! If it checks out, 1000 points.", fbFail:"Failed – try again later."
  }
@@ -534,7 +534,7 @@ function renderStart(){
   document.getElementById("startall").onclick = ()=>startGame();
   document.getElementById("startblitz").onclick = ()=>startGame(10, 10000);
   const sa=document.getElementById("startarcade");
-  if(sa) sa.onclick = ()=>startGame(null, ARCADE_TIME, true);
+  if(sa) sa.onclick = ()=>startGame(10, ARCADE_TIME, true);
   app.querySelectorAll(".fan .polaroid").forEach((el,i)=>{
     el.onclick = ()=>{
       if(arcadeUnlocked()) return;
@@ -559,7 +559,7 @@ function startGame(n, tms, arcade){
   qi=0; score=0; streak=0; correctCount=0;
   TIME = tms || 25000;
   arcadeOn = !!arcade; setArcadeSkin(arcadeOn);
-  gameMode = arcadeOn ? "👾23" : (tms ? "⚡10" : (n ? "10" : "23"));
+  gameMode = arcadeOn ? "👾10" : (tms ? "⚡10" : (n ? "10" : "23"));
   pendingBonusKey=null; endFx=false; savedThisGame=false;
   A.ensure(); A.unlock(); if(soundOn) A.music();
   round = shuffled(QUESTIONS.length).slice(0, n || QUESTIONS.length).sort((a,b)=>a-b);
@@ -917,7 +917,7 @@ function recListHtml(){
     `<span>${r.mode} · <b>${r.score}</b></span></div>`).join("");
 }
 function chipsHtml(){
-  return ["all","23","10","⚡10","👾23"].map(f=>
+  return ["all","23","10","⚡10","👾10"].map(f=>
     `<button class="chip ${boardFilter===f?"on":""}" data-f="${f}">${f==="all"?t().filtAll:f}</button>`).join("");
 }
 function bindChips(){

@@ -154,8 +154,8 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
              plink && tok1 && adopted && fpOk && hello1 && hello2 && nameCleared && teaser &&
              (w0 - w1) > 12 && contentOk &&
              arcLocked && eggPartial && eggOpen && eggLockedAgain &&
-             arcOpen && arcSkin && arcTime === 5000 && arcLen === 23 &&
-             arcMode === "\uD83D\uDC7E23" && /\d/.test(autoLbl) && autoAdvanced && fbHeld && bonusOk &&
+             arcOpen && arcSkin && arcTime === 5000 && arcLen === 10 &&
+             arcMode === "\uD83D\uDC7E10" && /\d/.test(autoLbl) && autoAdvanced && fbHeld && bonusOk &&
              errors.length === 0;
   if (!ok) { console.error("ASSERTIONS FAILED"); process.exit(1); }
   console.log("ALL PASS");
