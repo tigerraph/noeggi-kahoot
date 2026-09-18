@@ -40,7 +40,7 @@ const WRITE = ["POST", "PUT", "PATCH", "DELETE"];
   const probe = await p.evaluate(async path => {
     try {
       const r = await fetch(SUPA_URL + "/rest/v1/" + path,
-        { headers: { apikey: SUPA_KEY, Authorization: "Bearer " + SUPA_KEY } });
+        { headers: SUPA_H });
       const txt = await r.text();
       return { status: r.status, code: (txt && txt[0] === "{" ? JSON.parse(txt).code : null) || null };
     } catch (e) { return { status: 0, code: "FETCH" }; }

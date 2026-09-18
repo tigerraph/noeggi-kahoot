@@ -4,8 +4,8 @@ const https = require("https");
 const fs = require("fs");
 const path = require("path");
 
-const SUPA = "https://opgbezlecbggnqzlvhja.supabase.co";
-const KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9wZ2JlemxlY2JnZ25xemx2aGphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc1OTczMTYsImV4cCI6MjEwMzE3MzMxNn0.9KVl_dPJnma7sAd6YkH_U0HKpKkpSUnzfU_hwxM4x_4";
+const SUPA = "https://bvglvdcndhqrvpnghrkp.supabase.co";   // dm-quiz project, schema «noeggi» (since 18.09.2026)
+const KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ2Z2x2ZGNuZGhxcnZwbmdocmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2NzI1NTEsImV4cCI6MjEwMzI0ODU1MX0.KbfEhfxMpgpngP9iJQRqnmyF8hoiNo9vUJN3-c-k05Q";
 const PAGES = "https://tigerraph.github.io/noeggi-kahoot/";
 
 function req(url, opts = {}, body) {
@@ -21,7 +21,8 @@ function req(url, opts = {}, body) {
     r.end();
   });
 }
-const H = { apikey: KEY, Authorization: "Bearer " + KEY, "Content-Type": "application/json" };
+const H = { apikey: KEY, Authorization: "Bearer " + KEY, "Content-Type": "application/json",
+            "Accept-Profile": "noeggi", "Content-Profile": "noeggi" };
 const json = async (p, m = "GET", b) => {
   const r = await req(SUPA + "/rest/v1/" + p, { method: m, headers: H }, b);
   try { return JSON.parse(r.body); } catch (e) { return { error: r.status, body: r.body.slice(0, 200) }; }

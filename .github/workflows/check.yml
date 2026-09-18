@@ -1,0 +1,9 @@
+name: check
+on: [push, pull_request]
+jobs:
+  schema:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: The quiz uses only its own Supabase schema (noeggi)
+        run: bash scripts/check-schema.sh
