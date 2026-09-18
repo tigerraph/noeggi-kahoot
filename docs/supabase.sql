@@ -1,5 +1,5 @@
 -- ⚠️ Since 18.09.2026 the quiz runs in the dm-quiz Supabase project (bvglvdcndhqrvpnghrkp), in
--- nk_* tables and nk_* functions next to DM's dm_* tables. docs/move-to-dm-quiz-export.sql
+-- its own schema «noeggi» (same table and function names as below). docs/move-to-dm-quiz-export.sql
 -- carries that schema and moved the data. This file is the history of the old project
 -- (opgbezlecbggnqzlvhja), which is paused once the move is verified.
 

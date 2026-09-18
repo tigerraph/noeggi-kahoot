@@ -399,10 +399,15 @@ const store={
             catch(e){ (this.m=this.m||{})[k]=v; } }
 };
 function esc(s){ return String(s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
-/* Since 18.09.2026 the quiz lives in the dm-quiz Supabase project (free plan: two projects),
-   in its own nk_* tables and functions; docs/move-to-dm-quiz-export.sql moved the data. */
+/* Since 18.09.2026 the quiz shares the dm-quiz Supabase project (free plan: two projects) but
+   never its data: everything lives in the schema «noeggi», selected per request with the
+   Accept-/Content-Profile headers (supabase-js calls this db: { schema }). The DM app stays in
+   «public»; neither app references the other's schema (CI: scripts/check-schema.sh). */
 const SUPA_URL = "https://bvglvdcndhqrvpnghrkp.supabase.co";
+const SUPA_SCHEMA = "noeggi";
 const SUPA_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ2Z2x2ZGNuZGhxcnZwbmdocmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2NzI1NTEsImV4cCI6MjEwMzI0ODU1MX0.KbfEhfxMpgpngP9iJQRqnmyF8hoiNo9vUJN3-c-k05Q";
+const SUPA_H = { apikey:SUPA_KEY, Authorization:"Bearer "+SUPA_KEY,
+  "Accept-Profile":SUPA_SCHEMA, "Content-Profile":SUPA_SCHEMA };
 const SHAPES = ["▲","◆","●","■"];
 
 const I18N = {
@@ -574,7 +579,7 @@ function renderStart(){
       <span class="besttitle">🏆 ${t().recTitle}</span>
       <span class="bestrow" id="bestrow"></span>
     </button>
-    <p class="buildtag">Build 18.09. · 11:38</p>
+    <p class="buildtag">Build 18.09. · 11:43</p>
   </div>`;
   app.querySelectorAll("[data-lang]").forEach(b=>b.onclick=()=>setLang(b.dataset.lang));
   bindCtl();
@@ -1043,8 +1048,8 @@ function bindChips(){
 async function cloudTop(){
   if(!SUPA_URL) return null;
   try{
-    const r = await fetch(SUPA_URL+"/rest/v1/nk_scores?select=name,score,mode&order=score.desc&limit=50",
-      { headers:{ apikey:SUPA_KEY, Authorization:"Bearer "+SUPA_KEY } });
+    const r = await fetch(SUPA_URL+"/rest/v1/scores?select=name,score,mode&order=score.desc&limit=50",
+      { headers:{ ...SUPA_H } });
     if(!r.ok) return null;
     const rows = await r.json();
     return Array.isArray(rows) ? rows : null;
@@ -1053,9 +1058,9 @@ async function cloudTop(){
 async function sendFeedback(qid, claim){
   if(!SUPA_URL) return false;
   try{
-    const r = await fetch(SUPA_URL+"/rest/v1/nk_feedback", {
+    const r = await fetch(SUPA_URL+"/rest/v1/feedback", {
       method:"POST",
-      headers:{ apikey:SUPA_KEY, Authorization:"Bearer "+SUPA_KEY,
+      headers:{ ...SUPA_H,
                 "Content-Type":"application/json", Prefer:"return=minimal" },
       body: JSON.stringify({ qid, claim, name:lastName||null, token:playerToken||null, lang })
     });
@@ -1084,8 +1089,8 @@ function bindFeedback(qid){
 async function cloudBonus(){
   if(!SUPA_URL) return null;
   try{
-    const r = await fetch(SUPA_URL+"/rest/v1/nk_bonus?select=name,points",
-      { headers:{ apikey:SUPA_KEY, Authorization:"Bearer "+SUPA_KEY } });
+    const r = await fetch(SUPA_URL+"/rest/v1/bonus?select=name,points",
+      { headers:{ ...SUPA_H } });
     if(!r.ok) return null;
     const rows = await r.json();
     return Array.isArray(rows) ? rows : null;
@@ -1111,9 +1116,9 @@ function mergeBonus(rows, bonus){
 async function cloudSave(rec){
   if(!SUPA_URL) return;
   try{
-    await fetch(SUPA_URL+"/rest/v1/nk_scores", {
+    await fetch(SUPA_URL+"/rest/v1/scores", {
       method:"POST",
-      headers:{ apikey:SUPA_KEY, Authorization:"Bearer "+SUPA_KEY,
+      headers:{ ...SUPA_H,
                 "Content-Type":"application/json", Prefer:"return=minimal" },
       body: JSON.stringify({ name:rec.name, score:rec.score, correct:rec.correct, len:rec.len, mode:rec.mode })
     });
@@ -1127,9 +1132,9 @@ function newToken(){
 async function rpc(fn, body){
   if(!SUPA_URL) return null;
   try{
-    const r = await fetch(SUPA_URL+"/rest/v1/rpc/nk_"+fn, {
+    const r = await fetch(SUPA_URL+"/rest/v1/rpc/"+fn, {
       method:"POST",
-      headers:{ apikey:SUPA_KEY, Authorization:"Bearer "+SUPA_KEY, "Content-Type":"application/json" },
+      headers:{ ...SUPA_H, "Content-Type":"application/json" },
       body: JSON.stringify(body)
     });
     if(!r.ok) return null;
