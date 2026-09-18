@@ -4,8 +4,8 @@ const https = require("https");
 const fs = require("fs");
 const path = require("path");
 
-const SUPA = "https://opgbezlecbggnqzlvhja.supabase.co";
-const KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9wZ2JlemxlY2JnZ25xemx2aGphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc1OTczMTYsImV4cCI6MjEwMzE3MzMxNn0.9KVl_dPJnma7sAd6YkH_U0HKpKkpSUnzfU_hwxM4x_4";
+const SUPA = "https://bvglvdcndhqrvpnghrkp.supabase.co";   // dm-quiz project, nk_* tables (since 18.09.2026)
+const KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ2Z2x2ZGNuZGhxcnZwbmdocmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2NzI1NTEsImV4cCI6MjEwMzI0ODU1MX0.KbfEhfxMpgpngP9iJQRqnmyF8hoiNo9vUJN3-c-k05Q";
 const PAGES = "https://tigerraph.github.io/noeggi-kahoot/";
 
 function req(url, opts = {}, body) {
@@ -29,9 +29,9 @@ const json = async (p, m = "GET", b) => {
 
 (async () => {
   const [reports, scores, bonus] = await Promise.all([
-    json("rpc/feedback_list", "POST", "{}"),
-    json("scores?select=id,name,score,mode,correct,len,created_at&order=created_at.desc"),
-    json("bonus?select=name,points,reason")
+    json("rpc/nk_feedback_list", "POST", "{}"),
+    json("nk_scores?select=id,name,score,mode,correct,len,created_at&order=created_at.desc"),
+    json("nk_bonus?select=name,points,reason")
   ]);
 
   console.log("MELDUNGEN");

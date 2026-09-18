@@ -15,7 +15,7 @@ const WRITE = ["POST", "PUT", "PATCH", "DELETE"];
   await p.setRequestInterception(true);
   p.on("request", r => {
     // Only real writes — OPTIONS preflights must pass or the reads die with them.
-    if (WRITE.includes(r.method()) && /\/rest\/v1\/(scores|rpc\/player_upsert)/.test(r.url())) {
+    if (WRITE.includes(r.method()) && /\/rest\/v1\/(nk_scores|rpc\/nk_player_upsert)/.test(r.url())) {
       aborted.push(r.url().split("/rest/v1/")[1]);
       return r.abort();
     }
@@ -44,7 +44,7 @@ const WRITE = ["POST", "PUT", "PATCH", "DELETE"];
       const txt = await r.text();
       return { status: r.status, code: (txt && txt[0] === "{" ? JSON.parse(txt).code : null) || null };
     } catch (e) { return { status: 0, code: "FETCH" }; }
-  }, "feedback?select=id&limit=1");
+  }, "nk_feedback?select=id&limit=1");
   const feedbackTable = probe.code !== "PGRST205" && probe.code !== "FETCH";
   const fbList = await p.evaluate(() => rpc("feedback_list", {}));
   const fbReadable = Array.isArray(fbList);

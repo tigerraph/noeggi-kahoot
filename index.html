@@ -399,8 +399,10 @@ const store={
             catch(e){ (this.m=this.m||{})[k]=v; } }
 };
 function esc(s){ return String(s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
-const SUPA_URL = "https://opgbezlecbggnqzlvhja.supabase.co";
-const SUPA_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9wZ2JlemxlY2JnZ25xemx2aGphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc1OTczMTYsImV4cCI6MjEwMzE3MzMxNn0.9KVl_dPJnma7sAd6YkH_U0HKpKkpSUnzfU_hwxM4x_4";
+/* Since 18.09.2026 the quiz lives in the dm-quiz Supabase project (free plan: two projects),
+   in its own nk_* tables and functions; docs/move-to-dm-quiz-export.sql moved the data. */
+const SUPA_URL = "https://bvglvdcndhqrvpnghrkp.supabase.co";
+const SUPA_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ2Z2x2ZGNuZGhxcnZwbmdocmtwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2NzI1NTEsImV4cCI6MjEwMzI0ODU1MX0.KbfEhfxMpgpngP9iJQRqnmyF8hoiNo9vUJN3-c-k05Q";
 const SHAPES = ["▲","◆","●","■"];
 
 const I18N = {
@@ -572,7 +574,7 @@ function renderStart(){
       <span class="besttitle">🏆 ${t().recTitle}</span>
       <span class="bestrow" id="bestrow"></span>
     </button>
-    <p class="buildtag">Build 10.09. · 10:49</p>
+    <p class="buildtag">Build 18.09. · 11:38</p>
   </div>`;
   app.querySelectorAll("[data-lang]").forEach(b=>b.onclick=()=>setLang(b.dataset.lang));
   bindCtl();
@@ -1041,7 +1043,7 @@ function bindChips(){
 async function cloudTop(){
   if(!SUPA_URL) return null;
   try{
-    const r = await fetch(SUPA_URL+"/rest/v1/scores?select=name,score,mode&order=score.desc&limit=50",
+    const r = await fetch(SUPA_URL+"/rest/v1/nk_scores?select=name,score,mode&order=score.desc&limit=50",
       { headers:{ apikey:SUPA_KEY, Authorization:"Bearer "+SUPA_KEY } });
     if(!r.ok) return null;
     const rows = await r.json();
@@ -1051,7 +1053,7 @@ async function cloudTop(){
 async function sendFeedback(qid, claim){
   if(!SUPA_URL) return false;
   try{
-    const r = await fetch(SUPA_URL+"/rest/v1/feedback", {
+    const r = await fetch(SUPA_URL+"/rest/v1/nk_feedback", {
       method:"POST",
       headers:{ apikey:SUPA_KEY, Authorization:"Bearer "+SUPA_KEY,
                 "Content-Type":"application/json", Prefer:"return=minimal" },
@@ -1082,7 +1084,7 @@ function bindFeedback(qid){
 async function cloudBonus(){
   if(!SUPA_URL) return null;
   try{
-    const r = await fetch(SUPA_URL+"/rest/v1/bonus?select=name,points",
+    const r = await fetch(SUPA_URL+"/rest/v1/nk_bonus?select=name,points",
       { headers:{ apikey:SUPA_KEY, Authorization:"Bearer "+SUPA_KEY } });
     if(!r.ok) return null;
     const rows = await r.json();
@@ -1109,7 +1111,7 @@ function mergeBonus(rows, bonus){
 async function cloudSave(rec){
   if(!SUPA_URL) return;
   try{
-    await fetch(SUPA_URL+"/rest/v1/scores", {
+    await fetch(SUPA_URL+"/rest/v1/nk_scores", {
       method:"POST",
       headers:{ apikey:SUPA_KEY, Authorization:"Bearer "+SUPA_KEY,
                 "Content-Type":"application/json", Prefer:"return=minimal" },
@@ -1125,7 +1127,7 @@ function newToken(){
 async function rpc(fn, body){
   if(!SUPA_URL) return null;
   try{
-    const r = await fetch(SUPA_URL+"/rest/v1/rpc/"+fn, {
+    const r = await fetch(SUPA_URL+"/rest/v1/rpc/nk_"+fn, {
       method:"POST",
       headers:{ apikey:SUPA_KEY, Authorization:"Bearer "+SUPA_KEY, "Content-Type":"application/json" },
       body: JSON.stringify(body)
