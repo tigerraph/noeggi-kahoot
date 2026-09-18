@@ -27,3 +27,10 @@ Since 18.09.2026 the quiz shares a Supabase project with the Democracy Matters q
   membership table in `noeggi`, never with DM accounts.
 - Schema and the move: `docs/move-to-dm-quiz-export.sql`. History of the old project:
   `docs/supabase.sql`.
+
+## Testing
+
+- **Audio off when testing** (Rafa, 18.09.2026: a test round played music on his machine). Before
+  opening the live or local page in any browser an agent drives, set
+  `localStorage.setItem("nk_sound", "false")` (or press 🔊 first), and close the test tab when done.
+  `npm run verify` runs headless and is silent.
